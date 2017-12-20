@@ -68,12 +68,12 @@
       <v-layout row wrap style="margin-top: 500px" >
         <v-flex xs6 class="text-xs-center s2-image" >
           <img :class="s4IphoneImgClass" :src="iphone" height="420px">
-          <h3 style="color: #f5f5f5" :class="s4IphoneTextClass">Disponible à télécharger sur votre iPhone.</h3>
+          <h3 style="color: #f5f5f5; margin-top: 10px" :class="s4IphoneTextClass">Disponible à télécharger sur votre iPhone.</h3>
           <v-btn :class="s4IphoneTextClass">AppStore</v-btn>
         </v-flex>
         <v-flex xs6 class="text-xs-center s2-text" >
           <img :class="s4AndroidImgClass" :src="android" height="420px">
-          <h3 style="color: #f5f5f5" :class="s4AndroidTextClass">Ou alors sur votre appareil Android. Obtenez Vocs dès maintenant.</h3>
+          <h3 style="color: #f5f5f5; margin-top: 10px" :class="s4AndroidTextClass">Ou alors sur votre appareil Android. Obtenez Vocs dès maintenant.</h3>
           <v-btn :class="s4AndroidTextClass">Google Play Store</v-btn>
         </v-flex>
       </v-layout>
