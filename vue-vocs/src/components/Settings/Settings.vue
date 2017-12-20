@@ -1,0 +1,9 @@
+<template>
+  <div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <h1>Parametres</h1>
+  </div>
+</template>
