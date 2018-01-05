@@ -9,7 +9,33 @@
             </div>
           </div>
           <form v-if=!finished>
-            <h5>{{questionResult}}</h5>
+            <v-layout row>
+              <v-flex xs12>
+                <v-alert
+                  v-if="userEnteredCorrectAnswer"
+                  color="success"
+                  icon="check_circle"
+                  :value="userEnteredCorrectAnswer"
+                  dismissible
+                  transition="scale-transition"
+                >
+                  Bonne Réponse!
+                </v-alert>
+                <div v-if="userEnteredWrongAnswer">
+                  <v-alert
+                    color="error"
+                    icon="warning"
+                    :value="userEnteredWrongAnswer"
+                    transition="scale-transition"
+                  >
+                    Mauvaise Réponse...<br>
+                    La Bonne Réponse Etait:
+                    <h6>{{answer}}</h6>
+                    Entrer le bonne réponse en dessous.
+                  </v-alert>
+                </div>
+              </v-flex>
+            </v-layout>
             <br>
             <h2>Question: {{question}}</h2>
 <!--            <br>
@@ -68,7 +94,7 @@
         questionChoises: [],
         userAnswer: '',
         answer: '',
-        questionsAsked: 0,
+        questionsAsked: -1,
         finished: false,
         questionResult: '',
         correctAnswers: 0,
@@ -78,7 +104,9 @@
         questionChoisesTempList: '',
         randomIndexForCorrectAnswer: null,
         amountOfQuestionsUserWants: null,
-        amountOfQuestionsDialog: true
+        amountOfQuestionsDialog: true,
+        userEnteredCorrectAnswer: false,
+        userEnteredWrongAnswer: false
       }
     },
     computed: {
@@ -94,6 +122,8 @@
     },
     methods: {
       randomQuestion () {
+        this.userAnswer = ''
+        this.questionsAsked++
         var randomNum = Math.floor(Math.random() * this.list.wordTrads.length)
         console.log('randomNum: ' + randomNum)
         this.currentWordToRemove = randomNum
@@ -145,12 +175,13 @@
         console.log('------------------------------------------------')
       },
       testAnswer () {
-        this.questionsAsked++
         if (this.userAnswer === this.answer) {
           this.correctAnswers++
-          this.questionResult = 'Bonne Réponse'
+          this.userEnteredCorrectAnswer = true;
+          this.userEnteredWrongAnswer = false;
           if (this.questionsAsked >= this.amountOfQuestionsUserWants) {
             this.finished = true
+            this.userAnswer = ''
           } else {
             this.list.wordTrads.splice(this.currentWordToRemove, 1)
             this.questionChoises = []
@@ -158,17 +189,13 @@
             this.randomQuestion()
           }
         } else {
-          this.questionResult = 'Mauvaise Réponse'
           if (this.questionsAsked >= this.amountOfQuestionsUserWants) {
             this.finished = true
           } else {
-            this.list.wordTrads.splice(this.currentWordToRemove, 1)
-            this.questionChoises = []
-            this.questionChoisesTempList = JSON.parse(JSON.stringify(this.tempTempList))
-            this.randomQuestion()
+            this.userEnteredCorrectAnswer = false;
+            this.userEnteredWrongAnswer = true;
           }
         }
-        this.userAnswer = ''
       }
     },
     created () {
@@ -182,6 +209,9 @@
       this.listSize = this.list.wordTrads.length
       console.log(JSON.stringify(this.list))
       this.randomQuestion()
+      if(this.listSize < 5) {
+        this.amountOfQuestionsUserWants = 4;
+      }
     }
   }
 </script>

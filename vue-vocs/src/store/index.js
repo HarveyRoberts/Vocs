@@ -149,6 +149,9 @@ export const store = new Vuex.Store({
     createList (state, payload) {
       state.user.personalLists.push(payload)
     },
+    addListToUser (state, payload) {
+      state.user.personalLists.push(payload)
+    },
     createClass (state, payload) {
       state.user.classes.push(payload)
     },
@@ -160,6 +163,11 @@ export const store = new Vuex.Store({
                 }
               }
             } */
+      state.myDemands.demandSend.push(payload)
+      console.log('payload: ' + JSON.stringify(payload))
+      console.log('myDemands: ' + JSON.stringify(state.myDemands))
+    },
+    addTeachers (state, payload) {
       state.myDemands.demandSend.push(payload)
       console.log('payload: ' + JSON.stringify(payload))
       console.log('myDemands: ' + JSON.stringify(state.myDemands))
@@ -360,6 +368,25 @@ export const store = new Vuex.Store({
       state.user.email = payload.email
     }
   },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /*ACTIONS*/
+
+
+
+
   actions: {
     createList ({commit, state}, payload) {
       state.loading = true
@@ -513,6 +540,7 @@ export const store = new Vuex.Store({
         )
     },
     addStudents ({commit, state}, payload) {
+      state.loading = true
       var counter = 0
       /* var toSendOff = {} */
       var invitationToSendOff = null
@@ -546,6 +574,41 @@ export const store = new Vuex.Store({
           )
       }
     },
+    addTeachers ({commit, state}, payload) {
+      state.loading = true
+      var counter = 0
+      /* var toSendOff = {} */
+      var invitationToSendOff = null
+      var indexer = []
+      for (var i = 0; i < payload.invitedTeachers.length; i++) {
+        indexer[i] = i
+        invitationToSendOff = {
+          userSend: state.user.id,
+          userReceive: payload.invitedTeachers[i].id,
+          list: payload.selectedListToShare
+        }
+        Vue.http.post('https://vocsapi.lebarillier.fr/rest/demands', invitationToSendOff)
+          .then(response => {
+            console.log(response.body)
+            counter++
+            commit('addTeachers', response.body)
+            if (counter >= i) {
+              this.dispatch('setSnackbarIsEnabled', true)
+              this.dispatch('setSnackbarMessage', 'Votre liste a bien été envoyée')
+              state.loading = false
+              console.log(state.myDemands)
+            }
+          })
+          .catch(
+            error => {
+              console.log(error)
+              this.dispatch('setSnackbarIsEnabled', true)
+              this.dispatch('setSnackbarMessage', 'Votre liste n\'a pas été envoyée')
+              state.loading = false
+            }
+          )
+      }
+    },
     removeList ({commit, state}, payload) {
       state.loading = true
       Vue.http.delete('https://vocsapi.lebarillier.fr/rest/lists/' + payload)
@@ -563,13 +626,12 @@ export const store = new Vuex.Store({
       commit('logout')
     },
     testPasswordConfirm({commit,state}, payload) {
+      state.loading = true
       state.isConfirmingPassword = true;
       this.dispatch('signUserIn',payload)
     },
     signUserIn ({commit, state}, payload) {
-      if(!localStorage.getItem('userEmail') || !localStorage.getItem('userPassword')) {
-        state.loading = true
-      }
+      state.loading = true
       var theUser = {}
       Vue.http.post('https://vocsapi.lebarillier.fr/rest/users/authentification', payload)
         .then(user => {
@@ -614,7 +676,7 @@ export const store = new Vuex.Store({
                         .then(data5 => {
                           console.log(JSON.stringify(data5))
                           state.myDemands = data5
-                          console.log(JSON.stringify(state.myDemands))
+                          console.log('mes demandes: ' + JSON.stringify(state.myDemands))
                           console.log('https://vocsapi.lebarillier.fr/rest/demands/users/' + state.user.id)
                         })
                       Vue.http.get('https://vocsapi.lebarillier.fr/rest/classes')
@@ -1156,6 +1218,40 @@ export const store = new Vuex.Store({
             state.loading = false
           })
     },
+    addListToUser ({commit,state}, payload) {
+      state.loading = true
+      var listToAdd;
+      var wordTradIds = [];
+      Vue.http.get('https://vocsapi.lebarillier.fr/rest/lists/' + payload.listId)
+        .then(response => {
+          return response.json()
+        })
+        .then(data => {
+          listToAdd = data;
+          for(var c=0;c<data.wordTrads.length;c++) {
+            wordTradIds.push(data.wordTrads[c].id)
+          }
+          var toSendOff = {
+            name: data.name,
+            wordTrads: wordTradIds
+          }
+          Vue.http.post('https://vocsapi.lebarillier.fr/rest/users/' + state.user.id + '/lists', toSendOff)
+            .then(response => {
+              commit('addListToUser', response.body)
+              this.dispatch('setSnackbarIsEnabled', true)
+              this.dispatch('setSnackbarMessage', 'Votre liste a été ajoutée')
+              state.loading = false
+            })
+            .catch(
+              error => {
+                console.log(error)
+                this.dispatch('setSnackbarIsEnabled', true)
+                this.dispatch('setSnackbarMessage', 'Votre liste n\'a pas pu être ajoutée')
+                state.loading = false
+              }
+            )
+        })
+    },
     getSchools ({commit, state}) {
       Vue.http.get('https://vocsapi.lebarillier.fr/rest/schools')
         .then(response => {
@@ -1206,8 +1302,51 @@ export const store = new Vuex.Store({
         password: localStorage.getItem('userPassword')
       }
       this.dispatch('signUserIn', info)
+    },
+
+    sendSynonyme({oommit},payload) {
+
+      /*Vue.http.patch('https://vocsapi.lebarillier.fr/rest/users/' + state.user.id, toSendOff)
+        .then(
+          commit('modifyProfil', payload),
+          this.dispatch('setSnackbarIsEnabled', true),
+          this.dispatch('setSnackbarMessage', 'Votre profil a bien été modifié'),
+          state.isConfirmingPassword = false,
+          state.loading = false)
+        .catch(
+          error => {
+            console.log(error)
+            this.dispatch('setSnackbarIsEnabled', true)
+            this.dispatch('setSnackbarMessage', 'Votre profil n\'a pas pu être modifié')
+            state.isConfirmingPassword = false
+            state.loading = false
+          })*/
+
     }
   },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /*GETTERS*/
+
+
+
+
+
+
+
   getters: {
     loadedLists (state) {
       return state.user.personalLists
@@ -1255,6 +1394,15 @@ export const store = new Vuex.Store({
     },
     users (state) {
       return state.users
+    },
+    teachers (state) {
+      var teachers = [];
+      for (var i = 0; i < state.users.length; i++) {
+        if (JSON.stringify(state.users[i].roles) === '["ROLE_PROFESSOR"]') {
+          teachers.push(state.users[i]);
+        }
+      }
+      return teachers;
     },
     classes (state) {
       return state.user.classes

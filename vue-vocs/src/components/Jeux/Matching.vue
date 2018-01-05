@@ -4,14 +4,37 @@
       <v-flex xs4 offset-xs4>
         <div class="text-xs-center">
           <form v-if="!finished">
-            <h4>{{questionResult}}</h4>
+            <v-layout row>
+              <v-flex xs12>
+                <v-alert
+                  v-if="userEnteredCorrectAnswer"
+                  color="success"
+                  icon="check_circle"
+                  :value="userEnteredCorrectAnswer"
+                  dismissible
+                  transition="scale-transition"
+                >
+                  Bonne Réponse!
+                </v-alert>
+                <div v-if="userEnteredWrongAnswer">
+                  <v-alert
+                    color="error"
+                    icon="warning"
+                    :value="userEnteredWrongAnswer"
+                    transition="scale-transition"
+                  >
+                    Mauvaise Réponse...<br>
+                  </v-alert>
+                </div>
+              </v-flex>
+            </v-layout>
             <v-layout row wrap style="margin-left:-25vw;width: 75vw">
-              <v-flex xs6 style="background-color: #0d47a1">
+              <v-flex xs6 >
                 <div v-for="(aword,index) in listTrads"  v-if="index < amountOfQuestionsUserWants">
                   <v-btn :class="{selected: selectedTradWord === aword}" @click="testButtonsAndSelectCurrent(null,aword)"><h4>{{aword}}</h4></v-btn>
                 </div>
               </v-flex>
-              <v-flex xs6 style="background-color: #00a150">
+              <v-flex xs6 >
                 <div v-for="(aword,index) in listWords" v-if="index < amountOfQuestionsUserWants">
                   <v-btn :class="{selected: selectedWord === aword}" @click="testButtonsAndSelectCurrent(aword,null)"><h4>{{aword}}</h4></v-btn>
                 </div>
@@ -59,7 +82,9 @@
         listWords: [],
         listTrads:[],
         selectedWord: null,
-        selectedTradWord: null
+        selectedTradWord: null,
+        userEnteredWrongAnswer: false,
+        userEnteredCorrectAnswer: false
       }
     },
     computed: {
@@ -71,33 +96,13 @@
       }
     },
     methods: {
-      randomQuestion () {
-        var randomNum = Math.floor(Math.random() * this.list.wordTrads.length)
-        this.question = this.list.wordTrads[randomNum].word.content
-        this.answer = this.list.wordTrads[randomNum].trad.content
-        this.currentWordToRemove = randomNum
-      },
-      testAnswer () {
-        this.questionsAsked++
-        if (this.userAnswer === this.answer) {
-          this.correctAnswers++
-          this.questionResult = 'Bonne Réponse'
-          if (this.questionsAsked >= this.amountOfQuestionsUserWants) {
-            this.finished = true
-          } else {
-            this.list.wordTrads.splice(this.currentWordToRemove, 1)
-            this.randomQuestion()
-          }
-        } else {
-          this.questionResult = 'Mauvaise Réponse'
-          if (this.questionsAsked >= this.amountOfQuestionsUserWants) {
-            this.finished = true
-          } else {
-            this.list.wordTrads.splice(this.currentWordToRemove, 1)
-            this.randomQuestion()
+      wordInArray(word){
+        for(var i = 0;i<this.listWords.length;i++) {
+          if(word == this.listWords[i]) {
+            return i;
           }
         }
-        this.userAnswer = ''
+        return -1;
       },
       testButtonsAndSelectCurrent(word,trad) {
         if (word === null) {
@@ -112,22 +117,44 @@
               theCorrectAnswer = this.list.wordTrads[i].word.content
             }
           }
-          console.log(theCorrectAnswer)
           if(this.selectedWord === theCorrectAnswer) {
-            this.questionResult = 'correct'
+            this.questionsAsked++;
+            this.correctAnswers++;
+            if(this.questionsAsked >= this.amountOfQuestionsUserWants){
+              this.finished = true;
+            } else {
+              this.userEnteredWrongAnswer = false;
+              this.userEnteredCorrectAnswer = true;
+              for(var i=0;i<this.list.wordTrads.length;i++) {
+                if(this.selectedTradWord === this.list.wordTrads[i].trad.content) {
+                  this.list.wordTrads.splice(i,1);
+                  this.listWords.splice(this.wordInArray(this.selectedWord),1);
+                  this.listTrads.splice(i,1);
+                  this.selectedTradWord = null;
+                  this.selectedWord = null;
+                }
+              }
+            }
           } else {
-            this.questionResult = 'wrong'
+            this.userEnteredWrongAnswer = true;
+            this.userEnteredCorrectAnswer = false;
           }
         }
       }
     },
     created () {
       this.listSize = this.list.wordTrads.length
+      var selectedWord = this.list.wordTrads[Math.floor(Math.random() * (this.listSize))].word.content;
       for(var i=0;i<this.listSize;i++) {
-        this.listWords[i] = this.list.wordTrads[i].word.content
+        if(i>0) {
+          while(this.wordInArray(selectedWord)>-1) {
+            selectedWord = this.list.wordTrads[Math.floor(Math.random() * (this.listSize))].word.content
+          }
+        }
+        this.listWords[i] = selectedWord;
+        selectedWord = this.list.wordTrads[Math.floor(Math.random() * (this.listSize))].word.content
         this.listTrads[i] = this.list.wordTrads[i].trad.content
       }
-      this.randomQuestion()
     }
   }
 </script>

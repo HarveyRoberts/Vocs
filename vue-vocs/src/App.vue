@@ -226,13 +226,13 @@
                 <v-icon large class="mt-4">school</v-icon>
               </v-list-tile-avatar>
               <v-list-tile-content class="mt-4" style="height: 120px">
-                <div class="mt-5" style="height: 120px">
+                <div v-if="demand.classe != null" class="mt-5" style="height: 120px">
                   <strong>Demande pour rejoindre une classe</strong><br>
                   Demande de {{demand.userSend.firstname}} {{demand.userSend.surname}} pour la classe {{demand.classe.name}}</div>
               </v-list-tile-content>
               <v-list-tile-action style="height: 120px" class="mt-5">
                 <v-btn dark class="mt-4" color="cyan" @click="deleteDemand(demand.id)">Refuser</v-btn>
-                <v-btn dark class="mt-1" color="cyan" @click="addUserToClass(demand.classe.id, demand.userReceive.id); deleteDemand(demand.id)">Accepter</v-btn>
+                <v-btn v-if="demand.classe != null" dark class="mt-1" color="cyan" @click="addUserToClass(demand.classe.id, demand.userReceive.id); deleteDemand(demand.id)">Accepter</v-btn>
               </v-list-tile-action>
             </v-list-tile>
           </template>
@@ -256,9 +256,12 @@
                 <v-icon large class="mt-4">school</v-icon>
               </v-list-tile-avatar>
               <v-list-tile-content class="mt-4" style="height: 120px">
-                <div class="mt-5" style="height: 120px">
+                <div v-if="demand.classe != null" class="mt-5" style="height: 120px">
                   <strong>Demande pour rejoindre une classe</strong><br>
                   Demande à {{demand.userReceive.firstname}} {{demand.userReceive.surname}} pour votre classe {{demand.classe.name}}</div>
+                <div v-else-if="demand.list != null" class="mt-5" style="height: 120px">
+                  <strong>Demande pour partage de liste</strong><br>
+                  Demande à {{demand.userReceive.firstname}} {{demand.userReceive.surname}} pour votre liste {{demand.list.name}}</div>
               </v-list-tile-content>
               <v-list-tile-action style="height: 120px" class="mt-5">
                 <v-btn dark class="mt-4" color="cyan" @click="deleteDemand2(demand.id)">supprimer</v-btn>
@@ -285,13 +288,17 @@
                 <v-icon large class="mt-4">school</v-icon>
               </v-list-tile-avatar>
               <v-list-tile-content class="mt-4" style="height: 120px">
-                <div class="mt-5" style="height: 120px">
+                <div v-if="demand.classe != null" class="mt-5" style="height: 120px">
                   <strong>Demande pour rejoindre votre classe</strong><br>
                   Demande de {{demand.userSend.firstname}} {{demand.userSend.surname}} pour votre classe {{demand.classe.name}}</div>
+                <div v-else-if="demand.list != null" class="mt-5" style="height: 120px">
+                  <strong>Demande pour partage de liste</strong><br>
+                  {{demand.userSend.firstname}} {{demand.userSend.surname}} veut partager sa liste avec vous !</div>
               </v-list-tile-content>
               <v-list-tile-action style="height: 120px" class="mt-5">
                 <v-btn dark class="mt-4" color="cyan" @click="deleteDemand(demand.id)">Refuser</v-btn>
-                <v-btn dark class="mt-1" color="cyan" @click="addUserToClass(demand.classe.id, demand.userSend.id); deleteDemand(demand.id)">Accepter</v-btn>
+                <v-btn v-if="demand.classe != null" dark class="mt-1" color="cyan" @click="addUserToClass(demand.classe.id, demand.userSend.id); deleteDemand(demand.id)">Accepter</v-btn>
+                <v-btn v-else-if="demand.list != null" dark class="mt-1" color="cyan" @click="addListToUser(demand.list.id, demand.userSend.id); deleteDemand(demand.id)">Accepter</v-btn>
               </v-list-tile-action>
             </v-list-tile>
           </template>
@@ -542,6 +549,13 @@
           userId: idUser
         }
         this.$store.dispatch('addUserToClass', toSendOff)
+      },
+      addListToUser (idList, idUser) {
+        var toSendOff = {
+          listId: idList,
+          userId: idUser
+        }
+        this.$store.dispatch('addListToUser', toSendOff)
       },
       setSnackbarEnabled () {
         this.$store.dispatch('setSnackbarIsEnabled', false)

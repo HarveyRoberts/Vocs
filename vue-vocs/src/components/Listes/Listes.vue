@@ -23,6 +23,9 @@
               <v-btn v-if="isValidForAddingToClass(list.wordTrads.length)" style="font-size: 12px; background-color: #23c9ff; color: white" @click="addToClass = true; selectedListToAddInClass = list" >
                 Ajouter dans une classe
               </v-btn>
+              <v-btn v-if="isValidForAddingToClass(list.wordTrads.length)" style="font-size: 12px; background-color: #23c9ff; color: white" @click="shareList = true; selectedListToShare = list.id">
+                Partager
+              </v-btn>
               <v-list-tile-content style="cursor: pointer" class="ml-3" @click="clickedList(list.id); selectList(list, true)">
                 <v-list-tile-title style="font-size: 20px">{{list.name}} <v-icon class="ml-2" @click="confirmListRemoval = true">edit_mode</v-icon></v-list-tile-title>
               </v-list-tile-content>
@@ -258,6 +261,50 @@
       <div style="flex: 1 1 auto;"></div>
     </v-card>
   </v-dialog>
+
+
+
+
+  <v-dialog v-model="shareList" fullscreen transition="dialog-bottom-transition" style="z-index: 999;position: absolute" :overlay=true
+            scrollable>
+    <v-card>
+      <v-toolbar style="flex: 0 0 auto;" class="info">
+        <v-btn icon @click.native="shareList = false" dark>
+          <v-icon dark>close</v-icon>
+        </v-btn>
+        <v-toolbar-title style="color: white">Partager ma liste</v-toolbar-title>
+        <v-spacer></v-spacer>
+      </v-toolbar>
+      <v-card-title primary-title>
+        <v-flex xs12 sm6 offset-sm3>
+          <v-form>
+            <v-select
+              :items="theTeachers"
+              v-model="teacherName"
+              label="Nom du professeur"
+              required
+              autocomplete
+            ></v-select>
+            <v-btn :disabled="teacherName === ''" @click="addTeacher(teacherName)">Envoyer invitation</v-btn>
+          </v-form>
+          <div v-for="teacher in selectedTeachers">{{teacher.firstname}} {{teacher.surname}}</div>
+        </v-flex>
+      </v-card-title>
+      <v-card-actions>
+        <v-flex xs12 sm6 offset-sm3>
+          <v-btn
+            @click="addTeacher2(selectedTeachers)"
+            @click.stop="shareList = false"
+            :disabled="selectedTeachers.length === 0"
+          >
+            Fini
+          </v-btn>
+        </v-flex>
+      </v-card-actions>
+      <div style="flex: 1 1 auto;"></div>
+    </v-card>
+  </v-dialog>
+
 </v-container>
 </template>
 
@@ -280,7 +327,12 @@
         listRemovalId: '',
         addToClass: false,
         isAPersonalList: null,
-        selectedListToAddInClass: ''
+        selectedListToAddInClass: '',
+        shareList: false ,
+        selectedTeachers: [],
+        teacherName:'',
+        theTeachers: [],
+        selectedListToShare: '',
       }
     },
     computed: {
@@ -317,6 +369,10 @@
       },
       hasClass () {
         return JSON.stringify(this.$store.getters.user.classes) !== '[]'
+      },
+      teachers () {
+        return this.$store.getters.teachers;
+
       }
     },
     methods: {
@@ -374,11 +430,45 @@
       },
       listIsInClass (list) {
         this.dispatch('listIsInClass', list)
+      },
+      addTeacher (name) {
+        for (var i = 0; i < this.teachers.length; i++) {
+          if (name === this.teachers[i].firstname + ' ' + this.teachers[i].surname.toUpperCase()) {
+            var userToAdd = {
+              id: this.teachers[i].id,
+              firstname: this.teachers[i].firstname,
+              surname: this.teachers[i].surname,
+              roles: this.teachers[i].roles,
+              avatar: 'https://www.practicepanther.com/wp-content/uploads/2017/02/user.png'
+            }
+            for (var y = 0; y < this.theTeachers.length; y++) {
+              if (this.theTeachers[y] === name) {
+                this.theTeachers.splice(y, 1)
+              }
+            }
+          }
+        }
+        this.selectedTeachers.push(userToAdd)
+        this.teacherName = ''
+      },
+      addTeacher2 (invitedTeachers) {
+          var toSendOff = {
+            invitedTeachers: invitedTeachers,
+            selectedListToShare: this.selectedListToShare
+          }
+          this.$store.dispatch('addTeachers', toSendOff)
       }
     },
     created () {
       for (var i = 0; i < this.classes.length; i++) {
         this.tickedClasses[i] = false
+      }
+      for (var i = 0; i < this.teachers.length; i++) {
+        if(this.teachers[i].id !== this.$store.getters.user.id) {
+          var firstname = this.teachers[i].firstname
+          var surname = this.teachers[i].surname
+          this.theTeachers[i] = firstname + ' ' + surname.toUpperCase()
+        }
       }
     }
   }
