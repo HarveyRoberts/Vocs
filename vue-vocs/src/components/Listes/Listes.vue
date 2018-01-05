@@ -81,7 +81,7 @@
           <v-spacer></v-spacer>
         </v-toolbar>
         <v-list>
-          <v-list-group v-for="aClass in classes">
+          <v-list-group v-for="aClass in classes" :key="aClass.id">
             <v-list-tile slot="item" @click="">
               <v-list-tile-action>
                 <v-icon>school</v-icon>
@@ -98,7 +98,7 @@
                 <v-list-tile-title>Pas De Listes</v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
-            <v-list-tile v-for="list in aClass.lists">
+            <v-list-tile v-for="list in aClass.lists" :key="list.id">
               <v-list-tile-action>
                 <v-icon>description</v-icon>
               </v-list-tile-action>
@@ -383,53 +383,53 @@
         const listData = {
           name: this.createListName,
           wordTrads: this.createListWords
-        }
-        this.$store.dispatch('createList', listData)
-        this.createListBoxIsOpen = false
+        };
+        this.$store.dispatch('createList', listData);
+        this.createListBoxIsOpen = false;
       },
       addWord () {
         this.createListWords.push({word: {content: this.createWordName, language: 'EN'}, trad: {content: this.createWordTranslation, language: 'FR'}})
-        this.createWordTranslation = ''
-        this.createWordName = ''
-        this.createWordId++
+        this.createWordTranslation = '';
+        this.createWordName = '';
+        this.createWordId++;
       },
       removeList (listId) {
-        this.$store.dispatch('removeList', listId)
+        this.$store.dispatch('removeList', listId);
       },
       removeClassList (listId) {
-        this.$store.dispatch('removeClassList', listId)
+        this.$store.dispatch('removeClassList', listId);
       },
       setIsAPersonalList (booleanValue) {
-        this.isAPersonalList = booleanValue
+        this.isAPersonalList = booleanValue;
       },
       selectList (list, booleanValue) {
-        this.$store.dispatch('selectList', list)
-        this.setIsAPersonalList(booleanValue)
-        this.$store.dispatch('setIsAPersonalList', this.isAPersonalList)
+        this.$store.dispatch('selectList', list);
+        this.setIsAPersonalList(booleanValue);
+        this.$store.dispatch('setIsAPersonalList', this.isAPersonalList);
       },
       selectListForGame (list) {
-        this.$store.dispatch('selectListForGame', list)
-        this.$router.push('/games')
+        this.$store.dispatch('selectListForGame', list);
+        this.$router.push('/games');
       },
       isValidForAddingToClass (listLength) {
         if (this.role === 'PROFESSOR' && listLength > 0) {
-          return true
+          return true;
         } else {
-          return false
+          return false;
         }
       },
       tickClass (aClassId) {
-        this.$store.dispatch('setIsClickedClasses', aClassId)
+        this.$store.dispatch('setIsClickedClasses', aClassId);
       },
       addListToClasses (tickedClasses) {
         var toSendOff = {
           selectedList: this.selectedListToAddInClass,
           tickedArray: tickedClasses
         }
-        this.$store.dispatch('addListToClasses', toSendOff)
+        this.$store.dispatch('addListToClasses', toSendOff);
       },
       listIsInClass (list) {
-        this.dispatch('listIsInClass', list)
+        this.dispatch('listIsInClass', list);
       },
       addTeacher (name) {
         for (var i = 0; i < this.teachers.length; i++) {
@@ -443,13 +443,13 @@
             }
             for (var y = 0; y < this.theTeachers.length; y++) {
               if (this.theTeachers[y] === name) {
-                this.theTeachers.splice(y, 1)
+                this.theTeachers.splice(y, 1);
               }
             }
           }
         }
-        this.selectedTeachers.push(userToAdd)
-        this.teacherName = ''
+        this.selectedTeachers.push(userToAdd);
+        this.teacherName = '';
       },
       addTeacher2 (invitedTeachers) {
           var toSendOff = {
@@ -461,13 +461,13 @@
     },
     created () {
       for (var i = 0; i < this.classes.length; i++) {
-        this.tickedClasses[i] = false
+        this.tickedClasses[i] = false;
       }
       for (var i = 0; i < this.teachers.length; i++) {
         if(this.teachers[i].id !== this.$store.getters.user.id) {
-          var firstname = this.teachers[i].firstname
-          var surname = this.teachers[i].surname
-          this.theTeachers[i] = firstname + ' ' + surname.toUpperCase()
+          var firstname = this.teachers[i].firstname;
+          var surname = this.teachers[i].surname;
+          this.theTeachers[i] = firstname + ' ' + surname.toUpperCase();
         }
       }
     }

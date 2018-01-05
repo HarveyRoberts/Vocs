@@ -115,7 +115,7 @@
                 ></v-select>
                 <v-btn :disabled="addStudentName === ''" @click="addStudent(addStudentName)">Envoyer invitation</v-btn>
               </v-form>
-              <div v-for="student in invitedStudents">{{student.firstname}} {{student.surname}}</div>
+              <div v-for="student in invitedStudents" :key="student.id">{{student.firstname}} {{student.surname}}</div>
             </v-form>
           </v-flex>
         </v-card-title>

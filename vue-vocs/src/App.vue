@@ -132,7 +132,7 @@
       <!--Space between elements-->
       <v-spacer></v-spacer>
       <!--Group of items-->
-      <v-toolbar-items v-for="item in menuItems" v-if="item.shown" class="hidden-sm-and-down topbar-btn">
+      <v-toolbar-items v-for="item in menuItems" :key="item.link" v-if="item.shown" class="hidden-sm-and-down topbar-btn">
         <!--Button-->
         <v-btn style="background: none" :style="{color: topbarTextColor}" class="elevation-0" :class="item.buttonType" :to="item.link">
           <v-icon left color="light-blue darken-1" style="margin-bottom: 3px; margin-right: 7px;">{{item.icon}}</v-icon>
@@ -175,7 +175,7 @@
       <v-spacer></v-spacer>
       <div style="margin-right: 2%">{{topbarAccountText}}</div>
       <!--Group of items-->
-      <v-toolbar-items v-for="item in menuItems" v-if="item.shown" class="hidden-sm-and-down topbar-btn">
+      <v-toolbar-items v-for="item in menuItems" :key="item.link" v-if="item.shown" class="hidden-sm-and-down topbar-btn">
         <!--Button-->
         <v-btn style="background: none" :style="{color: topbarTextColor}" class="elevation-0" :class="item.buttonType" :to="item.link">
           <v-icon left color="light-blue darken-1">{{item.icon}}</v-icon>
@@ -347,7 +347,7 @@
         dashboardMenuItems: [
           {icon: 'home', title: 'Principal', link: '/home', accountType: 'ALL'},
           {icon: 'play_arrow', title: 'Exercises', link: '/games', accountType: 'ALL'},
-          {icon: 'description', title: 'Listes', link: '/lists', accountType: 'ALL'}
+          {icon: 'description', title: 'Listes', link: '/texttospeech', accountType: 'ALL'}
         ],
         dashboardMenuItems2: [
           {icon: 'show_chart', title: 'Statistiques', link: '/statistics', accountType: 'ALL'},
@@ -533,15 +533,15 @@
       },
       dashboardMove () {
         if (this.mainClass === 'dashboard-half-open') {
-          this.mainClass = 'dashboard-open'
-          this.dashboardWidth = 300
-          this.dashboardMarginTop = 20
-          this.dashboardAvatarStyle = true
+          this.mainClass = 'dashboard-open';
+          this.dashboardWidth = 300;
+          this.dashboardMarginTop = 20;
+          this.dashboardAvatarStyle = true;
         } else if (this.mainClass === 'dashboard-open') {
-          this.mainClass = 'dashboard-half-open'
-          this.dashboardAvatarStyle = false
-          this.dashboardWidth = 60
-          this.dashboardMarginTop = -210
+          this.mainClass = 'dashboard-half-open';
+          this.dashboardAvatarStyle = false;
+          this.dashboardWidth = 60;
+          this.dashboardMarginTop = -210;
         }
       },
       deleteDemand (id) {

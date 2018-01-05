@@ -24,7 +24,7 @@
         </div>
         <v-container fluid style="margin-top: 50px; margin-left: 10%">
           <v-layout row wrap>
-            <v-flex xs3 class="mb-3 mr-2 ml-2" v-for="gameMode in gameModes">
+            <v-flex xs3 class="mb-3 mr-2 ml-2" v-for="gameMode in gameModes" :key="gameMode.name">
               <div  class="white--text game-box elevation-6" :style="{ backgroundColor: gameMode.color }">
                 <v-layout row>
                   <v-flex xs12>

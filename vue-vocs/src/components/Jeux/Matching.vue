@@ -30,12 +30,12 @@
             </v-layout>
             <v-layout row wrap style="margin-left:-25vw;width: 75vw">
               <v-flex xs6 >
-                <div v-for="(aword,index) in listTrads"  v-if="index < amountOfQuestionsUserWants">
+                <div v-for="(aword,index) in listTrads" :key="aword" v-if="index < amountOfQuestionsUserWants">
                   <v-btn :class="{selected: selectedTradWord === aword}" @click="testButtonsAndSelectCurrent(null,aword)"><h4>{{aword}}</h4></v-btn>
                 </div>
               </v-flex>
               <v-flex xs6 >
-                <div v-for="(aword,index) in listWords" v-if="index < amountOfQuestionsUserWants">
+                <div v-for="(aword,index) in listWords" :key="aword" v-if="index < amountOfQuestionsUserWants">
                   <v-btn :class="{selected: selectedWord === aword}" @click="testButtonsAndSelectCurrent(aword,null)"><h4>{{aword}}</h4></v-btn>
                 </div>
               </v-flex>

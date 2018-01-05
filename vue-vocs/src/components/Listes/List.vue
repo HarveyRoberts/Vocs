@@ -13,7 +13,7 @@
           </v-toolbar>
           <v-list>
             <div v-if="list.wordTrads.length <= 0" class="text-xs-center mt-4"><h5>Liste vide</h5></div>
-            <v-list-tile v-for="aWord in list.wordTrads">
+            <v-list-tile v-for="aWord in list.wordTrads" :key="aWord.id">
               <v-dialog v-model="showWordDeleteConfirmation" persistent>
                 <v-card>
                   <v-card-title class="headline">Êtes-vous sûr de vouloir supprimer ce mot?</v-card-title>
