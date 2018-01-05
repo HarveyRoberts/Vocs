@@ -3,14 +3,16 @@
     <v-layout row wrap>
       <v-flex xs4 sm6 md4 wrap class="mb-4">
         <v-card color="red lighten-2" class="white--text text-xs-center ml-3 mr-3">
-          <div style="padding-top: 10px" class="headline text-xs-center">Ma Classe</div>
+          <div v-if="accountType !== 'Professeur' " style="padding-top: 10px" class="headline text-xs-center">Ma Classe</div>
+          <div v-else style="padding-top: 10px" class="headline text-xs-center">Mes Classes</div>
           <div v-if="user.roles !== 'USER' && user.classes.length === 0">Pas de classe</div>
           <div v-else-if="user.roles === 'USER' && user.classes.length === 0">Pas de classe</div>
           <div v-else>{{user.classes[0].name}}</div>
           <div class="text-xs-center mt-2">
             <v-icon class="white--text" style="font-size: 90px">school</v-icon>
           </div>
-          <v-btn style="margin-top: 10px; margin-bottom: 10px;" flat dark to="/class">Voir Ma Classe</v-btn>
+          <v-btn v-if="accountType !== 'Professeur' " style="margin-top: 10px; margin-bottom: 10px;" flat dark to="/class">Voir Ma Classe</v-btn>
+          <v-btn v-else style="margin-top: 10px; margin-bottom: 10px;" flat dark to="/class">Voir Mes Classes</v-btn>
         </v-card>
       </v-flex>
       <v-flex xs4 sm6 md4 wrap>

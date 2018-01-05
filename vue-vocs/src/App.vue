@@ -262,9 +262,12 @@
                 <div v-else-if="demand.list != null" class="mt-5" style="height: 120px">
                   <strong>Demande pour partage de liste</strong><br>
                   Demande à {{demand.userReceive.firstname}} {{demand.userReceive.surname}} pour votre liste {{demand.list.name}}</div>
+                <div v-else-if="demand.wordTrad != null" class="mt-5" style="height: 120px">
+                  <strong>Demande pour ajout de synonyme</strong><br>
+                  Propose à {{demand.userReceive.firstname}} {{demand.userReceive.surname}} le synonyme {{demand.wordTrad.word.content}} pour le mot {{demand.wordTrad.trad.content}}</div>
               </v-list-tile-content>
               <v-list-tile-action style="height: 120px" class="mt-5">
-                <v-btn dark class="mt-4" color="cyan" @click="deleteDemand2(demand.id)">supprimer</v-btn>
+                <v-btn dark class="mt-4" color="cyan" @click="deleteDemand2(demand.id)">Retirer</v-btn>
               </v-list-tile-action>
             </v-list-tile>
           </template>
@@ -294,11 +297,15 @@
                 <div v-else-if="demand.list != null" class="mt-5" style="height: 120px">
                   <strong>Demande pour partage de liste</strong><br>
                   {{demand.userSend.firstname}} {{demand.userSend.surname}} veut partager sa liste avec vous !</div>
+                <div v-else-if="demand.wordTrad != null" class="mt-5" style="height: 120px">
+                  <strong>Demande pour ajout de synonyme</strong><br>
+                  {{demand.userSend.firstname}} {{demand.userSend.surname}} propose le synonyme {{demand.wordTrad.word.content}} pour le mot {{demand.wordTrad.trad.content}}</div>
               </v-list-tile-content>
               <v-list-tile-action style="height: 120px" class="mt-5">
                 <v-btn dark class="mt-4" color="cyan" @click="deleteDemand(demand.id)">Refuser</v-btn>
                 <v-btn v-if="demand.classe != null" dark class="mt-1" color="cyan" @click="addUserToClass(demand.classe.id, demand.userSend.id); deleteDemand(demand.id)">Accepter</v-btn>
                 <v-btn v-else-if="demand.list != null" dark class="mt-1" color="cyan" @click="addListToUser(demand.list.id, demand.userSend.id); deleteDemand(demand.id)">Accepter</v-btn>
+                <v-btn v-else-if="demand.wordTrad != null" dark class="mt-1" color="cyan" @click="addSynonyme(demand), deleteDemand(demand.id)">Accepter</v-btn>
               </v-list-tile-action>
             </v-list-tile>
           </template>
@@ -440,7 +447,7 @@
         if (this.role === 'STUDENT') {
           return '#36c0ff'
         } else if (this.role === 'PROFESSOR') {
-          return '#ce6661'
+          return '#FFB74D'
         } else {
           return 'white'
         }
@@ -553,7 +560,7 @@
       addListToUser (idList, idUser) {
         var toSendOff = {
           listId: idList,
-          userId: idUser
+          userId: idUser,
         }
         this.$store.dispatch('addListToUser', toSendOff)
       },
@@ -563,6 +570,9 @@
       beforeunload () {
         localStorage.removeItem('userEmail');
         localStorage.removeItem('userPassword');
+      },
+      addSynonyme(demand) {
+        this.$store.dispatch('addSynonyme',demand)
       }
     },
     created () {

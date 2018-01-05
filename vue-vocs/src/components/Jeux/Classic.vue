@@ -109,6 +109,7 @@
         question: '',
         userAnswer: '',
         answer: '',
+        answerObject: {},
         questionsAsked: -1,
         finished: false,
         questionResult: '',
@@ -146,8 +147,9 @@
       randomQuestion () {
         this.questionsAsked++;
         var randomNum = Math.floor(Math.random() * this.list.wordTrads.length)
-        this.question = this.list.wordTrads[randomNum].word.content
-        this.answer = this.list.wordTrads[randomNum].trad.content
+        this.question = this.list.wordTrads[randomNum].trad.content
+        this.answer = this.list.wordTrads[randomNum].word.content
+        this.answerObject = this.list.wordTrads[randomNum];
         this.currentWordToRemove = randomNum
         this.userAnswer = ''
       },
@@ -184,9 +186,12 @@
       },
 
       sendSynonyme () {
-        this.$store.dispatch('sendSynonyme', this.userAnswer, this.answer);
-
-        alertSignalerMot = false;
+        var toSend = {
+          userAnswer: this.userAnswer,
+          answerObject: this.answerObject
+        }
+        this.$store.dispatch('sendSynonyme', toSend);
+        this.alertSignalerMot = false;
       }
     },
     created () {

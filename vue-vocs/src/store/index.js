@@ -394,6 +394,8 @@ export const store = new Vuex.Store({
         name: payload.name,
         wordTrads: []
       }
+      var wordContent;
+      var tradContent;
       var ok = 0
       Vue.http.post('https://vocsapi.lebarillier.fr/rest/users/' + state.user.id + '/lists', list)
         .then(response => {
@@ -403,13 +405,17 @@ export const store = new Vuex.Store({
           console.log('payload.wordTrads: ' + JSON.stringify(payload.wordTrads[0]))
           var wordsToSend = []
           for (var i = 0; i < payload.wordTrads.length; i++) {
+            wordContent = payload.wordTrads[i].word.content.toLowerCase()
+            wordContent= wordContent.charAt(0).toUpperCase() + wordContent.slice(1);
+            tradContent =  payload.wordTrads[i].trad.content.toLowerCase()
+            tradContent = tradContent.charAt(0).toUpperCase() + tradContent.slice(1);
             wordsToSend[i] = {
               word: {
-                content: payload.wordTrads[i].word.content,
+                content: wordContent,
                 language: 'EN'
               },
               trad: {
-                content: payload.wordTrads[i].trad.content,
+                content: tradContent,
                 language: 'FR'
               }
             }
@@ -971,14 +977,20 @@ export const store = new Vuex.Store({
       state.loading = true
       var ok = 0
       var wordsToSend = []
+      var wordContent;
+      var tradContent;
       for (var i = 0; i < payload.length; i++) {
+        wordContent = payload[i].word.content.toLowerCase()
+        wordContent= wordContent.charAt(0).toUpperCase() + wordContent.slice(1);
+        tradContent =  payload[i].trad.content.toLowerCase()
+        tradContent = tradContent.charAt(0).toUpperCase() + tradContent.slice(1);
         wordsToSend[i] = {
           word: {
-            content: payload[i].word.content,
+            content: wordContent,
             language: 'EN'
           },
           trad: {
-            content: payload[i].trad.content,
+            content: tradContent,
             language: 'FR'
           }
         }
@@ -1203,10 +1215,12 @@ export const store = new Vuex.Store({
                 return response.json()
               })
               .then(data => {
-                for (var i = 0; i < state.user.classes.length; i++) {
-                  if (state.user.classes[i].id === payload.classId) {
-                    state.user.classes[i].users.push(data)
-                    state.loading = false
+                if(state.user.classes !== null) {
+                  for (var i = 0; i < state.user.classes.length; i++) {
+                    if (state.user.classes[i].id === payload.classId) {
+                      state.user.classes[i].users.push(data)
+                      state.loading = false
+                    }
                   }
                 }
               })
@@ -1304,24 +1318,116 @@ export const store = new Vuex.Store({
       this.dispatch('signUserIn', info)
     },
 
-    sendSynonyme({oommit},payload) {
+    sendSynonyme({state},payload) {
+      state.loading = true
+      var userReceiveId = null
+      if(state.user.roles === 'STUDENT') {
+        Vue.http.get('https://vocsapi.lebarillier.fr/rest/classes/' + state.user.classes[0].id)
+          .then(response2 => {
+            return response2.json()
+          })
+          .then(data2 => {
+            for (var i = 0; i < data2.users.length; i++) {
+              if (JSON.stringify(data2.users[i].roles) === '["ROLE_PROFESSOR"]') {
+                userReceiveId = data2.users[i].id
+              }
+            }
+            var invitationToSendOff = {
+              userSend: state.user.id,
+              userReceive: userReceiveId,
+              wordTrad: {
+                word: {
+                  content: payload.userAnswer.toLowerCase().charAt(0).toUpperCase(),
+                  language: 'EN',
+                  trads: []
+                },
+                trad: {
+                  content: payload.answerObject.trad.content,
+                  language: 'FR',
+                  trads: []
+                }
+              }
+            }
+            Vue.http.post('https://vocsapi.lebarillier.fr/rest/demands', invitationToSendOff)
+              .then(response => {
+                Vue.http.get('https://vocsapi.lebarillier.fr/rest/demands/users/' + state.user.id)
+                  .then(response4 => {
+                    return response4.json()
+                  })
+                  .then(data5 => {
+                    state.myDemands = data5
+                    state.loading = false
+                    this.dispatch('setSnackbarIsEnabled', true)
+                    this.dispatch('setSnackbarMessage', 'La demande a bien été envoyée')
+                  })
+              })
+              .catch(
+                error => {
+                  console.log(error)
+                  this.dispatch('setSnackbarIsEnabled', true)
+                  this.dispatch('setSnackbarMessage', 'La demande n\'a pas été envoyée')
+                  state.loading = false
+                }
+              )
+          })
+      }else {
+        var invitationToSendOff = {
+          userSend: state.user.id,
+          userReceive: -1,
+          wordTrad: {
+            word: {
+              content: payload.userAnswer,
+              language: 'EN',
+              trads: []
+            },
+            trad: {
+              content: payload.answerObject.trad.content,
+              language: 'FR',
+              trads: []
+            }
+          }
+        }
+        Vue.http.post('https://vocsapi.lebarillier.fr/rest/demands', invitationToSendOff)
+          .then(response => {
+            Vue.http.get('https://vocsapi.lebarillier.fr/rest/demands/users/' + state.user.id)
+              .then(response4 => {
+                return response4.json()
+              })
+              .then(data5 => {
+                state.myDemands = data5
+                state.loading = false
+                this.dispatch('setSnackbarIsEnabled', true)
+                this.dispatch('setSnackbarMessage', 'La demande a bien été envoyée')
+              })
+          })
+      }
 
-      /*Vue.http.patch('https://vocsapi.lebarillier.fr/rest/users/' + state.user.id, toSendOff)
+    },
+    addSynonyme({commit,state},payload) {
+      var trads = [];
+      if(payload.wordTrad.trad.trads.length>0) {
+        for(var f = 0;f<payload.wordTrad.trad.trads.length;f++){
+          trads = payload.wordTrads.trad.trads[f].id;
+        }
+      }
+      trads.push(payload.wordTrad.word.id)
+      var toSendOff = {
+        content: payload.wordTrad.trad.content,
+        language: 'FR',
+        trads: trads
+      }
+      Vue.http.patch('https://vocsapi.lebarillier.fr/rest/words/' + payload.wordTrad.trad.id, toSendOff)
         .then(
-          commit('modifyProfil', payload),
           this.dispatch('setSnackbarIsEnabled', true),
-          this.dispatch('setSnackbarMessage', 'Votre profil a bien été modifié'),
-          state.isConfirmingPassword = false,
+          this.dispatch('setSnackbarMessage', 'Le Synonyme a bien été ajouté'),
           state.loading = false)
         .catch(
           error => {
             console.log(error)
             this.dispatch('setSnackbarIsEnabled', true)
-            this.dispatch('setSnackbarMessage', 'Votre profil n\'a pas pu être modifié')
-            state.isConfirmingPassword = false
+            this.dispatch('setSnackbarMessage', 'Le Synonyme n\'a pas pu être ajouté')
             state.loading = false
-          })*/
-
+          })
     }
   },
 
