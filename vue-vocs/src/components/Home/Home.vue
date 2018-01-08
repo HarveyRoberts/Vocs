@@ -138,9 +138,9 @@
         if (this.user.roles === 'STUDENT' || JSON.stringify(this.user.roles) === '["ROLE_STUDENT"]') {
           return 'Élève';
         } else if (this.user.roles === 'PROFESSOR' || JSON.stringify(this.user.roles) === '["ROLE_PROFESSOR"]') {
-          return 'Professeur'
+          return 'Professeur';
         } else {
-          return 'Libre'
+          return 'Libre';
         }
       }
     }
