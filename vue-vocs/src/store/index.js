@@ -303,9 +303,17 @@ export const store = new Vuex.Store({
       state.isClickedClasses = clickedArray
     },
     addListToClasses (state, payload) {
+      var ok = true;
       for (var i = 0; i < state.user.classes.length; i++) {
         if (payload.tickedArray[i] === true) {
-          state.user.classes[i].lists.push(payload.selectedList)
+          for(var c=0;c<state.user.classes[i].lists.length;c++) {
+            if(payload.selectedList.id === state.user.classes[i].lists[c].id) {
+              ok =false;
+            }
+          }
+          if(ok) {
+            state.user.classes[i].lists.push(payload.selectedList)
+          }
         }
       }
     },
@@ -1139,6 +1147,7 @@ export const store = new Vuex.Store({
                         console.log('Patched All Classes')
                         this.dispatch('setSnackbarIsEnabled', true)
                         this.dispatch('setSnackbarMessage', 'La liste a bien été ajoutée à la classe')
+                        commit('addListToClasses', payload)
                       }
                     })
                     .catch(
@@ -1155,7 +1164,6 @@ export const store = new Vuex.Store({
             })
         }
       }
-      commit('addListToClasses', payload)
     },
     deleteDemand ({commit, state}, payload) {
       state.loading = true
@@ -1321,6 +1329,7 @@ export const store = new Vuex.Store({
     sendSynonyme({state},payload) {
       state.loading = true
       var userReceiveId = null
+      var wordContent;
       if(state.user.roles === 'STUDENT') {
         Vue.http.get('https://vocsapi.lebarillier.fr/rest/classes/' + state.user.classes[0].id)
           .then(response2 => {
@@ -1332,12 +1341,14 @@ export const store = new Vuex.Store({
                 userReceiveId = data2.users[i].id
               }
             }
+            wordContent = payload.userAnswer.toLowerCase()
+            wordContent= wordContent.charAt(0).toUpperCase() + wordContent.slice(1);
             var invitationToSendOff = {
               userSend: state.user.id,
               userReceive: userReceiveId,
               wordTrad: {
                 word: {
-                  content: payload.userAnswer.toLowerCase().charAt(0).toUpperCase(),
+                  content: wordContent,
                   language: 'EN',
                   trads: []
                 },
@@ -1373,10 +1384,10 @@ export const store = new Vuex.Store({
       }else {
         var invitationToSendOff = {
           userSend: state.user.id,
-          userReceive: -1,
+          userReceive: 48,
           wordTrad: {
             word: {
-              content: payload.userAnswer,
+              content: payload.userAnswer.toLowerCase().charAt(0).toUpperCase(),
               language: 'EN',
               trads: []
             },
@@ -1400,6 +1411,14 @@ export const store = new Vuex.Store({
                 this.dispatch('setSnackbarMessage', 'La demande a bien été envoyée')
               })
           })
+          .catch(
+            error => {
+              console.log(error)
+              this.dispatch('setSnackbarIsEnabled', true)
+              this.dispatch('setSnackbarMessage', 'La demande n\'a pas été envoyée')
+              state.loading = false
+            }
+          )
       }
 
     },
@@ -1407,7 +1426,7 @@ export const store = new Vuex.Store({
       var trads = [];
       if(payload.wordTrad.trad.trads.length>0) {
         for(var f = 0;f<payload.wordTrad.trad.trads.length;f++){
-          trads = payload.wordTrads.trad.trads[f].id;
+          trads.push(payload.wordTrad.trad.trads[f].id);
         }
       }
       trads.push(payload.wordTrad.word.id)

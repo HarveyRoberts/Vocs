@@ -11,6 +11,7 @@
           <form v-if=!finished>
             <v-layout row>
               <v-flex xs12>
+
                 <v-alert
                   v-if="userEnteredCorrectAnswer"
                   color="success"
@@ -94,7 +95,7 @@
         questionChoises: [],
         userAnswer: '',
         answer: '',
-        questionsAsked: -1,
+        questionsAsked: 0,
         finished: false,
         questionResult: '',
         correctAnswers: 0,
@@ -106,7 +107,8 @@
         amountOfQuestionsUserWants: null,
         amountOfQuestionsDialog: true,
         userEnteredCorrectAnswer: false,
-        userEnteredWrongAnswer: false
+        userEnteredWrongAnswer: false,
+        hasGotItWrong: false
       }
     },
     computed: {
@@ -122,8 +124,8 @@
     },
     methods: {
       randomQuestion () {
+        this.hasGotItWrong = false;
         this.userAnswer = ''
-        this.questionsAsked++
         var randomNum = Math.floor(Math.random() * this.list.wordTrads.length)
         console.log('randomNum: ' + randomNum)
         this.currentWordToRemove = randomNum
@@ -176,9 +178,12 @@
       },
       testAnswer () {
         if (this.userAnswer === this.answer) {
-          this.correctAnswers++
+          if(!this.hasGotItWrong){
+            this.correctAnswers++
+          }
           this.userEnteredCorrectAnswer = true;
           this.userEnteredWrongAnswer = false;
+          this.questionsAsked++
           if (this.questionsAsked >= this.amountOfQuestionsUserWants) {
             this.finished = true
             this.userAnswer = ''
@@ -189,12 +194,9 @@
             this.randomQuestion()
           }
         } else {
-          if (this.questionsAsked >= this.amountOfQuestionsUserWants) {
-            this.finished = true
-          } else {
-            this.userEnteredCorrectAnswer = false;
-            this.userEnteredWrongAnswer = true;
-          }
+          this.hasGotItWrong = true;
+          this.userEnteredCorrectAnswer = false;
+          this.userEnteredWrongAnswer = true;
         }
       }
     },

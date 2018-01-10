@@ -110,7 +110,7 @@
         userAnswer: '',
         answer: '',
         answerObject: {},
-        questionsAsked: -1,
+        questionsAsked: 0,
         finished: false,
         questionResult: '',
         correctAnswers: 0,
@@ -120,7 +120,9 @@
         amountOfQuestionsDialog: true,
         alertSignalerMot: false,
         userEnteredCorrectAnswer : false,
-        userEnteredWrongAnswer : false
+        userEnteredWrongAnswer : false,
+        hasGotItWrong: false,
+        synonymes : []
       }
     },
     computed: {
@@ -131,7 +133,7 @@
         return JSON.parse(JSON.stringify(this.$store.getters.gameList))
       },
       progress () {
-        return (this.questionsAsked / this.amountOfQuestionsUserWants) * 100
+        return (this.questionsAsked / this.amountOfQuestionsUserWants) * 100;
       },
       accountType () {
         if (this.user.roles === 'STUDENT' || JSON.stringify(this.user.roles) === '["ROLE_STUDENT"]') {
@@ -145,30 +147,27 @@
     },
     methods: {
       randomQuestion () {
-        this.questionsAsked++;
-        var randomNum = Math.floor(Math.random() * this.list.wordTrads.length)
-        this.question = this.list.wordTrads[randomNum].trad.content
-        this.answer = this.list.wordTrads[randomNum].word.content
+        this.hasGotItWrong = false;
+        console.log("Q asked: " + this.questionsAsked + " Q Wants: " + this.amountOfQuestionsUserWants + " Progress: " + this.progress)
+        var randomNum = Math.floor(Math.random() * this.list.wordTrads.length);
+        this.question = this.list.wordTrads[randomNum].trad.content;
+        this.answer = this.list.wordTrads[randomNum].word.content;
+        this.synonymes = this.list.wordTrads[randomNum].trad.trads;
+        console.log("all synonymes: " + JSON.stringify(this.list.wordTrads[randomNum].word));
         this.answerObject = this.list.wordTrads[randomNum];
-        this.currentWordToRemove = randomNum
-        this.userAnswer = ''
-      },
-      nextQuestion() {
-        this.userEnteredCorrectAnswer = false;
-        this.userEnteredWrongAnswer= false;
-        if (this.questionsAsked >= this.amountOfQuestionsUserWants) {
-          this.finished = true
-        } else {
-          this.list.wordTrads.splice(this.currentWordToRemove, 1)
-          this.randomQuestion()
-        }
+        this.currentWordToRemove = randomNum;
+        this.userAnswer = '';
       },
       testAnswer () {
+        var heEnteredSynonyme = this.testIfUserEnteredASynonyme(this.userAnswer,this.synonymes);
         if (this.userAnswer === this.answer) {
-          this.correctAnswers++
+          if(!this.hasGotItWrong){
+            this.correctAnswers++
+          }
           this.userEnteredCorrectAnswer = true;
           this.userEnteredWrongAnswer = false;
           this.questionResult = 'Bonne Réponse'
+          this.questionsAsked++;
           if (this.questionsAsked >= this.amountOfQuestionsUserWants) {
             this.finished = true
             this.userAnswer = ''
@@ -176,27 +175,52 @@
             this.list.wordTrads.splice(this.currentWordToRemove, 1)
             this.randomQuestion()
           }
-        } else {
-          this.correctAnswers--;
+        } else if(heEnteredSynonyme) {
+          if(!this.hasGotItWrong){
+            this.correctAnswers++
+          }
+          this.userEnteredCorrectAnswer = true;
+          this.userEnteredWrongAnswer = false;
+          this.questionResult = 'Bonne Réponse'
+          this.questionsAsked++;
+          if (this.questionsAsked >= this.amountOfQuestionsUserWants) {
+            this.finished = true
+            this.userAnswer = ''
+          } else {
+            this.list.wordTrads.splice(this.currentWordToRemove, 1)
+            this.randomQuestion()
+          }
+        }else {
+          this.hasGotItWrong = true;
           this.userEnteredCorrectAnswer = false;
           this.userEnteredWrongAnswer = true;
           this.questionResult = 'Mauvaise Réponse'
         }
 
       },
-
+      testIfUserEnteredASynonyme(userInput,synonymes){
+        console.log("testing for synonyme");
+        for (var s=0;s<synonymes.length;s++){
+          console.log("user input: "+userInput+" curent synonyme: "+synonymes[s].content);
+          if (userInput == synonymes[s].content){
+            return true;
+          }
+        }
+        return false;
+      },
       sendSynonyme () {
         var toSend = {
           userAnswer: this.userAnswer,
           answerObject: this.answerObject
         }
+        console.log(this.userAnswer);
         this.$store.dispatch('sendSynonyme', toSend);
         this.alertSignalerMot = false;
       }
     },
     created () {
-      this.listSize = this.list.wordTrads.length
-      this.randomQuestion()
+      this.listSize = this.list.wordTrads.length;
+      this.randomQuestion();
     }
   }
 </script>

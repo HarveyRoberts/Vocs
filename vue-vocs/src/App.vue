@@ -347,7 +347,7 @@
         dashboardMenuItems: [
           {icon: 'home', title: 'Principal', link: '/home', accountType: 'ALL'},
           {icon: 'play_arrow', title: 'Exercises', link: '/games', accountType: 'ALL'},
-          {icon: 'description', title: 'Listes', link: '/texttospeech', accountType: 'ALL'}
+          {icon: 'description', title: 'Listes', link: '/lists', accountType: 'ALL'}
         ],
         dashboardMenuItems2: [
           {icon: 'show_chart', title: 'Statistiques', link: '/statistics', accountType: 'ALL'},

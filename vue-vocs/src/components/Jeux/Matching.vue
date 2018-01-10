@@ -6,6 +6,11 @@
           <form v-if="!finished">
             <v-layout row>
               <v-flex xs12>
+                <div class="mb-5 text-xs-center">
+                  <div style="width: 100%; background-color: rgba(0,115,237,0.47); height: 10px">
+                    <div style="background-color: #059ffb; height: 10px; transition: all 300ms cubic-bezier(0.550, 0.085, 0.680, 0.530)" :style="{width: progress + '%'}"></div>
+                  </div>
+                </div>
                 <v-alert
                   v-if="userEnteredCorrectAnswer"
                   color="success"
@@ -56,7 +61,7 @@
         <v-card class="light-blue" dark>
           <v-card-title dark class="headline">Selectionnez le nombre de mots voulues</v-card-title>
           <v-slider min="1" dark class="pl-4 pr-4" track-color="gray" thumb-color="indigo" color="white" :max="this.listSize" v-model="amountOfQuestionsUserWants" thumb-label step="1" snap></v-slider>
-          <div class="text-xs-center pb-2"> <v-btn large flat dark @click="amountOfQuestionsDialog = false" >Jouer</v-btn></div>
+          <div class="text-xs-center pb-2"> <v-btn large flat dark @click="startQCM" >Jouer</v-btn></div>
         </v-card>
       </v-dialog>
     </v-layout>
@@ -84,7 +89,8 @@
         selectedWord: null,
         selectedTradWord: null,
         userEnteredWrongAnswer: false,
-        userEnteredCorrectAnswer: false
+        userEnteredCorrectAnswer: false,
+        hasGotItWrong: false
       }
     },
     computed: {
@@ -96,6 +102,20 @@
       }
     },
     methods: {
+      startQCM () {
+        this.amountOfQuestionsDialog = false;
+        var selectedWord = this.list.wordTrads[Math.floor(Math.random() * (this.listSize))].word.content;
+        for(var i=0;i<this.listSize;i++) {
+          if(i>0) {
+            while(this.wordInArray(selectedWord)>-1) {
+              selectedWord = this.list.wordTrads[Math.floor(Math.random() * (this.listSize))].word.content
+            }
+          }
+          this.listWords[i] = selectedWord;
+          this.listTrads[i] = this.list.wordTrads[i].trad.content
+          selectedWord = this.list.wordTrads[Math.floor(Math.random() * (this.listSize))].word.content
+        }
+      },
       wordInArray(word){
         for(var i = 0;i<this.listWords.length;i++) {
           if(word == this.listWords[i]) {
@@ -118,8 +138,12 @@
             }
           }
           if(this.selectedWord === theCorrectAnswer) {
+
+            if(!this.hasGotItWrong){
+              this.correctAnswers++;
+            }
+            this.hasGotItWrong = false;
             this.questionsAsked++;
-            this.correctAnswers++;
             if(this.questionsAsked >= this.amountOfQuestionsUserWants){
               this.finished = true;
             } else {
@@ -136,6 +160,7 @@
               }
             }
           } else {
+            this.hasGotItWrong = true;
             this.userEnteredWrongAnswer = true;
             this.userEnteredCorrectAnswer = false;
           }
@@ -144,17 +169,6 @@
     },
     created () {
       this.listSize = this.list.wordTrads.length
-      var selectedWord = this.list.wordTrads[Math.floor(Math.random() * (this.listSize))].word.content;
-      for(var i=0;i<this.listSize;i++) {
-        if(i>0) {
-          while(this.wordInArray(selectedWord)>-1) {
-            selectedWord = this.list.wordTrads[Math.floor(Math.random() * (this.listSize))].word.content
-          }
-        }
-        this.listWords[i] = selectedWord;
-        selectedWord = this.list.wordTrads[Math.floor(Math.random() * (this.listSize))].word.content
-        this.listTrads[i] = this.list.wordTrads[i].trad.content
-      }
     }
   }
 </script>
