@@ -486,62 +486,56 @@ export const store = new Vuex.Store({
           var counter = 0
           /* var toSendOff = {} */
           var invitationToSendOff = null
-          for (var i = 0; i < payload.users.length; i++) {
-            indexer[i] = i
-            invitationToSendOff = {
-              userSend: state.user.id,
-              userReceive: theClass.users[i].id,
-              classe: theClass.id
-            }
+          if(payload.users.length > 0){
+            for (var i = 0; i < payload.users.length; i++) {
+              indexer[i] = i
+              invitationToSendOff = {
+                userSend: state.user.id,
+                userReceive: theClass.users[i].id,
+                classe: theClass.id
+              }
 
-            Vue.http.post('https://vocsapi.lebarillier.fr/rest/demands', invitationToSendOff)
-              .then(response => {
-                theClass.users = [
-                  {
-                    id: state.user.id,
-                    firstname: state.user.firstname,
-                    surname: state.user.surname,
-                    roles: 'PROFESSOR'
+              Vue.http.post('https://vocsapi.lebarillier.fr/rest/demands', invitationToSendOff)
+                .then(response => {
+                  theClass.users = [
+                    {
+                      id: state.user.id,
+                      firstname: state.user.firstname,
+                      surname: state.user.surname,
+                      roles: 'PROFESSOR'
+                    }
+                  ]
+                  console.log(response)
+                  counter++
+                  if (counter >= i) {
+                    this.dispatch('setSnackbarIsEnabled', true)
+                    this.dispatch('setSnackbarMessage', 'Votre classe a bien été créée')
+                    state.loading = false
+                    commit('createClass', theClass)
                   }
-                ]
-                console.log(response)
-                counter++
-                if (counter >= i) {
-                  this.dispatch('setSnackbarIsEnabled', true)
-                  this.dispatch('setSnackbarMessage', 'Votre classe a bien été créée')
-                  state.loading = false
-                  commit('createClass', theClass)
-                }
-              })
-              .catch(
-                error => {
-                  console.log(error)
-                  this.dispatch('setSnackbarIsEnabled', true)
-                  this.dispatch('setSnackbarMessage', 'Votre classe n\'a pas été créée')
-                  state.loading = false
-                }
-              )
-
-            /* Pour ajouter un élève à une classe */
-            /*
-            toSendOff = {
-              classes: [theClass.id]
+                })
+                .catch(
+                  error => {
+                    console.log(error)
+                    this.dispatch('setSnackbarIsEnabled', true)
+                    this.dispatch('setSnackbarMessage', 'Votre classe n\'a pas été créée')
+                    state.loading = false
+                  }
+                )
             }
-            Vue.http.patch('https://vocsapi.lebarillier.fr/rest/users/' + theClass.users[i].id, toSendOff)
-              .then(response => {
-                theClass.users[indexer[counter]] = response.body
-                counter++
-                if (counter >= i) {
-                  state.loading = false
-                  commit('createClass', theClass)
-                }
-              })
-              .catch(
-                error => {
-                  console.log(error)
-                  state.loading = false
-                }
-              ) */
+          } else {
+            theClass.users = [
+              {
+                id: state.user.id,
+                firstname: state.user.firstname,
+                surname: state.user.surname,
+                roles: 'PROFESSOR'
+              }
+            ]
+            commit('createClass', theClass)
+            this.dispatch('setSnackbarIsEnabled', true)
+            this.dispatch('setSnackbarMessage', 'Votre classe a bien été créée')
+            state.loading = false
           }
         })
         .catch(
@@ -929,38 +923,56 @@ export const store = new Vuex.Store({
           usersInclass = state.user.classes[i].users
         }
       }
-      for (var y = 0; y < usersInclass.length; y++) {
-        if (JSON.stringify(usersInclass[y].roles) !== '["ROLE_PROFESSOR"]') {
-          Vue.http.patch('https://vocsapi.lebarillier.fr/rest/users/' + usersInclass[y].id, toSendOff)
-            .then(data => {
-              console.log(data)
-              counter++
-              if (counter >= usersInclass.length - 1) {
-                Vue.http.delete('https://vocsapi.lebarillier.fr/rest/classes/' + payload)
-                  .then(
-                    commit('removeClass', payload),
-                    this.dispatch('setSnackbarIsEnabled', true),
-                    this.dispatch('setSnackbarMessage', 'La classe a bien été supprimé'),
-                    state.loading = false
-                  )
-                  .catch(
-                    error => {
-                      console.log(error)
-                      this.dispatch('setSnackbarIsEnabled', true)
-                      this.dispatch('setSnackbarMessage', 'La classe n\'a pas été supprimé')
+      if(usersInclass.length > 1) {
+        for (var y = 0; y < usersInclass.length; y++) {
+          if (JSON.stringify(usersInclass[y].roles) !== '["ROLE_PROFESSOR"]') {
+            Vue.http.patch('https://vocsapi.lebarillier.fr/rest/users/' + usersInclass[y].id, toSendOff)
+              .then(data => {
+                console.log(data)
+                counter++
+                if (counter >= usersInclass.length - 1) {
+                  Vue.http.delete('https://vocsapi.lebarillier.fr/rest/classes/' + payload)
+                    .then(
+                      commit('removeClass', payload),
+                      this.dispatch('setSnackbarIsEnabled', true),
+                      this.dispatch('setSnackbarMessage', 'La classe a bien été supprimé'),
                       state.loading = false
-                    }
-                  )
-              }
-            })
-            .catch(
-              error => {
-                console.log(error)
-                this.dispatch('setSnackbarIsEnabled', true)
-                this.dispatch('setSnackbarMessage', 'La classe n\'a pas été supprimé')
-                state.loading = false
+                    )
+                    .catch(
+                      error => {
+                        console.log(error)
+                        this.dispatch('setSnackbarIsEnabled', true)
+                        this.dispatch('setSnackbarMessage', 'La classe n\'a pas été supprimé')
+                        state.loading = false
+                      }
+                    )
+                }
               })
+              .catch(
+                error => {
+                  console.log(error)
+                  this.dispatch('setSnackbarIsEnabled', true)
+                  this.dispatch('setSnackbarMessage', 'La classe n\'a pas été supprimé')
+                  state.loading = false
+                })
+          }
         }
+      } else {
+        Vue.http.delete('https://vocsapi.lebarillier.fr/rest/classes/' + payload)
+          .then(
+            commit('removeClass', payload),
+            this.dispatch('setSnackbarIsEnabled', true),
+            this.dispatch('setSnackbarMessage', 'La classe a bien été supprimé'),
+            state.loading = false
+          )
+          .catch(
+            error => {
+              console.log(error)
+              this.dispatch('setSnackbarIsEnabled', true)
+              this.dispatch('setSnackbarMessage', 'La classe n\'a pas été supprimé')
+              state.loading = false
+            }
+          )
       }
     },
     selectList ({commit}, payload) {

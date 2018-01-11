@@ -171,7 +171,7 @@
             <v-card-text>
               <div class="text-xs-center" style="font-size: 20px">Compte Élève</div>
               <v-container>
-                <form @submit.prevent="onSignup">
+                <form >
                   <v-layout row>
                     <v-text-field
                       class="mr-2"
@@ -202,9 +202,19 @@
                     </v-layout>
                   </v-layout>
                   <v-layout row>
+                    <v-layout row>
+                      <v-select
+                        :items="theClasses"
+                        v-model="classSearch"
+                        label="Enter une class"
+                        required
+                      ></v-select>
+                    </v-layout>
+                  </v-layout>
+                  <v-layout row>
                     {{notice}}
                     <v-flex  xs6 offset-xs3 class="text-xs-center">
-                      <v-btn justify-center type="submit" >Continuer</v-btn>
+                      <v-btn justify-center @click="acceptClassJoin" :disabled="classSearch === '' || user.classes[0].school" >Continuer</v-btn>
                     </v-flex>
                   </v-layout>
                 </form>
@@ -296,6 +306,8 @@
         teacherSelected: 'teacher-selected-false',
         studentSelected: 'student-selected-false',
         freeSelected: 'free-selected-false',
+        theClasses: [],
+        classSearch: '',
         user: {
           roles: null,
           firstname: null,
@@ -313,6 +325,9 @@
       }
     },
     computed: {
+      allClasses () {
+        return this.$store.getters.allClasses
+      },
       inscriptionErrorMessage () {
         return this.$store.getters.inscriptionErrorMessage
       },
@@ -322,6 +337,7 @@
       schools () {
         return this.$store.getters.schools
       }
+
     },
     methods: {
       onSignup () {
@@ -344,9 +360,29 @@
       },
       resetSignInAndUpErrorMessages () {
         this.$store.dispatch('resetSignInAndUpErrorMessages')
+      },
+      acceptClassJoin () {
+        /*
+                this.$store.dispatch('setFirstTimeStudent', true)
+                this.$store.dispatch('setRoles', 'STUDENT') */
+        var id = null
+        for (var i = 0; i < this.allClasses.length; i++) {
+          if (this.allClasses[i].name === this.classSearch) {
+            id = this.allClasses[i].id
+          }
+        }
+        var theClassToSendOff = {
+          id: id,
+          name: this.classSearch
+        }
+        this.$store.dispatch('setUserClass', theClassToSendOff)
+        this.onSignup();
       }
     },
     created () {
+      for (var i = 0; i < this.allClasses.length; i++) {
+        this.theClasses[i] = this.allClasses[i].name
+      }
       for (var i = 0; i < this.schools.length; i++) {
         this.allSchools[i] = this.schools[i].nom
       }

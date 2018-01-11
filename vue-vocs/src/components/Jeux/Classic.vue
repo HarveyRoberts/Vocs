@@ -151,7 +151,7 @@
         console.log("Q asked: " + this.questionsAsked + " Q Wants: " + this.amountOfQuestionsUserWants + " Progress: " + this.progress)
         var randomNum = Math.floor(Math.random() * this.list.wordTrads.length);
         this.question = this.list.wordTrads[randomNum].trad.content;
-        this.answer = this.list.wordTrads[randomNum].word.content;
+        this.answer = this.list.wordTrads[randomNum].word.content.toLowerCase();
         this.synonymes = this.list.wordTrads[randomNum].trad.trads;
         console.log("all synonymes: " + JSON.stringify(this.list.wordTrads[randomNum].word));
         this.answerObject = this.list.wordTrads[randomNum];
@@ -160,7 +160,7 @@
       },
       testAnswer () {
         var heEnteredSynonyme = this.testIfUserEnteredASynonyme(this.userAnswer,this.synonymes);
-        if (this.userAnswer === this.answer) {
+        if (this.userAnswer.toLowerCase() === this.answer) {
           if(!this.hasGotItWrong){
             this.correctAnswers++
           }
@@ -202,7 +202,7 @@
         console.log("testing for synonyme");
         for (var s=0;s<synonymes.length;s++){
           console.log("user input: "+userInput+" curent synonyme: "+synonymes[s].content);
-          if (userInput == synonymes[s].content){
+          if (userInput.toLowerCase() == synonymes[s].content.toLowerCase()){
             return true;
           }
         }

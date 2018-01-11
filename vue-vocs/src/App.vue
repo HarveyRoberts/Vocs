@@ -403,7 +403,7 @@
         } else if (this.$store.getters.roles === 'USER') {
           return 'Rejoindre Une Classe'
         } else {
-          return 'erreur'
+          return 'Rejoindre Une Classe'
         }
       },
       classButtonLink () {
@@ -416,7 +416,7 @@
         } else if (this.$store.getters.roles === 'USER') {
           return '/joinclass'
         } else {
-          return 'erreur'
+          return '/joinclass'
         }
       },
       profile () {
@@ -515,6 +515,8 @@
         if (this.offsetTop > this.oldOffsetTop && this.isLoggedIn === false) {
           this.topBarClass = 'top-bar-hide'
         } else if (this.offsetTop < this.oldOffsetTop && this.isLoggedIn === false) {
+          this.topBarClass = 'top-bar-show'
+        } else if(this.isLoggedIn){
           this.topBarClass = 'top-bar-show'
         }
         this.oldOffsetTop = this.offsetTop
