@@ -1,11 +1,11 @@
 <template>
   <div v-scroll="scroll">
-    <v-parallax class="s1-parallax" src="https://wallpapershome.com/images/pages/pic_h/11925.jpg" style="height:100vh;width:100vw">
+    <v-parallax class="s1-parallax" :src="BGFrontPageSRC" style="height:100vh;width:100vw;">
       <v-layout column align-center justify-center>
         <v-flex class="text-md-center" :class="s1TextClass">
           <h1 class="white--text text-xs-center textMain" >La différence entre <br>parler anglais et <br>bien parler anglais c'est<br></h1>
           <h1 class="white--text text-xs-center mb-0">Vocs</h1>
-          <p><v-btn color="white" class="mt-3 s1-btn" large to="/inscription">
+          <p><v-btn color="white" class="mt-3 s1-btn" style="border-radius: 10px" large to="/inscription">
             Commencer
           </v-btn></p>
         </v-flex>
@@ -86,6 +86,7 @@
 
 <script>
   import HomepageBG from '@/assets/HomepageBG.png'
+  import BGFrontPage from '@/assets/BGFrontPage.png'
   import HomepageBG2 from '@/assets/HomepageBG2.png'
   import HomepageBG3 from '@/assets/HomepageBG3.png'
   import HomepageBG4 from '@/assets/HomepageBG4.png'
@@ -97,6 +98,7 @@
   export default {
     data () {
       return {
+        BGFrontPageSRC:BGFrontPage,
         sliderImages: [
           {imageUrl: HomepageBG, title: 'Le Vocabulaire'},
           {imageUrl: HomepageBG2, title: 'L\'Orthophe'},
