@@ -143,6 +143,9 @@
           return 'Libre';
         }
       }
+    },
+    created () {
+      this.$store.dispatch('setIsPlayingGame', false)
     }
   }
 </script>

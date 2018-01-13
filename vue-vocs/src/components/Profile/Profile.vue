@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid style="padding-top: 90px; background-color: #8BC3DC; padding-right: 0px; padding-left: 0px; padding-bottom: 0px">
+  <v-container fluid style="padding-top: 90px;height:140vh; background-color: #8BC3DC; padding-right: 0px; padding-left: 0px; padding-bottom: 0px">
     <v-layout row wrap>
       <v-flex xs6 sm6 md4 offset-xs5 wrap class="mb-4 text-xs-center">
         <div class="text-xs-center">
@@ -14,7 +14,7 @@
         <h2 class="white--text text-xs-center">Mon Profil</h2>
       </v-flex>
     </v-layout>
-    <v-layout style="background-color: #ebebeb" row wrap>
+    <v-layout style="background-color: #ebebeb;" row wrap>
       <v-card style="width:100%; height: 115px" class="gray--text text-xs-center">
         <div style="padding-top: 20px" class="headline text-xs-center">{{user.firstname}} {{user.surname}}</div>
         <span v-if="accountType === 'Élève' && user.classes.length !== 0" class="white&#45;&#45;text" style="font-size: 25px">{{user.classes[0].name}}</span>
@@ -24,7 +24,10 @@
 
 
       <v-card v-if="!editProfil" style="width:100%; height: 40vh; margin-top: 30px" class="gray--text text-xs-center ml-3 mr-3">
-        <v-btn style="margin-left: 95%;margin-top: 15px" icon @click="enterPassword = true"><v-icon large>mode_edit</v-icon></v-btn>
+        <v-btn style="margin-left: 95%;margin-top: 15px" class="editButton" icon @mouseover="modifyProfilMessage = true" @mouseleave="modifyProfilMessage = false" @click="enterPassword = true">
+          <v-icon large>mode_edit</v-icon>
+          <div class="modifyProfilMessage" v-if="modifyProfilMessage">Modifier</div>
+        </v-btn>
         <br>
         <div style="padding-top: 10px" class="headline text-xs-center"><h5>Prenom:     {{user.firstname}}</h5></div>
         <div><h5>Nom:     {{user.surname}}</h5></div>
@@ -62,7 +65,7 @@
         <form>
           <br>
           <div style="display: flex;width: 40%;margin: auto" class="headline text-xs-center">
-            <div style="margin-top: 18px;margin-right: 20px">Prenom:</div>
+            <div style="margin-top: 18px;margin-right: 20px">Prénom:</div>
               <v-text-field
                 name="Firstname"
                 :placeholder="user.firstname"
@@ -86,7 +89,7 @@
             </v-text-field>
           </div>
           <div style="padding-top: 10px;display: flex;width: 40%;margin: auto" class="headline text-xs-center">
-            <div style="margin-top: 18px;margin-right: 20px">Password:  </div>
+            <div style="margin-top: 18px;margin-right: 20px">Mot de passe:  </div>
             <v-text-field style="width: 75%"
               name="password"
               v-model="theModifiedUser.password"
@@ -98,9 +101,9 @@
       </v-card>
 
 
-      <v-card color="white" style="width:100%; margin-top: 30px" class="gray--text text-xs-center ml-3 mr-3">
+      <v-card color="white" style="width:100%; margin-top: 30px;margin-bottom: 30px;" class="gray--text text-xs-center ml-3 mr-3">
         <div style="padding-top: 10px" class="headline text-xs-center"><h4>Mes Listes</h4></div>
-        <div><h5>{{user.personalLists.length}} liste(s)</h5></div>
+        <div style="padding-bottom: 5px"><h5>{{user.personalLists.length}} liste(s)</h5></div>
       </v-card>
     </v-layout>
   </v-container>
@@ -124,6 +127,7 @@
           {name: 'Thomas', surname: 'Herbelin', avatar: 'https://www.practicepanther.com/wp-content/uploads/2017/02/user.png'}
         ],
         enterPassword: false,
+        modifyProfilMessage: false,
         theModifiedUser: {
           firstname: null,
           surname: null,
@@ -173,7 +177,26 @@
       }
     },
     created () {
-      this.info.email = this.user.email
+      this.$store.dispatch('setIsPlayingGame', false)
+      this.info.email = this.user.email;
+      this.theModifiedUser.firstname = this.user.firstname;
+      this.theModifiedUser.surname = this.user.surname;
+      this.theModifiedUser.email = this.user.email;
     }
   }
 </script>
+
+<style scoped>
+  .modifyProfilMessage {
+    position: absolute;
+    background-color: #4e93bf;
+    color: white;
+    width:75px;
+    height:25px;
+    padding-top:4px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-top: 40px;
+    margin-left: -20px;
+  }
+</style>

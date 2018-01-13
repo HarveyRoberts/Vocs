@@ -181,6 +181,9 @@
           this.s1TextClass = 's1-text-show'
         }
       })
+    },
+    created () {
+      this.$store.dispatch('setIsPlayingGame', false)
     }
   }
 </script>

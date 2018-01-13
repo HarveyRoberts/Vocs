@@ -1,13 +1,13 @@
 <template>
   <v-container fluid class=mt-5 style="background-color: #f4f4f4; height: 685px" >
-    <v-layout row wrap style="margin-top: 10vh">
+    <v-layout row wrap style="margin-top: 5vh">
+      <div class="mb-5 text-xs-center" style="width: 90vw;margin:auto">
+        <div style="width: 100%; background-color: rgba(0,115,237,0.47); height: 10px">
+          <div style="background-color: #059ffb; height: 10px; transition: all 300ms cubic-bezier(0.550, 0.085, 0.680, 0.530)" :style="{width: progress + '%'}"></div>
+        </div>
+      </div>
       <v-flex xs4 offset-xs4>
         <div class=text-xs-center>
-          <div class="mb-5">
-            <div style="width: 100%; background-color: rgba(0,115,237,0.47); height: 10px">
-              <div style="background-color: #059ffb; height: 10px; transition: all 300ms cubic-bezier(0.550, 0.085, 0.680, 0.530)" :style="{width: progress + '%'}"></div>
-            </div>
-          </div>
           <form v-if=!finished>
             <v-layout row>
               <v-flex xs12>
@@ -75,12 +75,11 @@
     </v-layout>
     <v-layout row justify-center>
       <v-dialog v-if="this.listSize >= 5"persistent v-model="amountOfQuestionsDialog">
-        <v-card class="blue" dark>
+        <v-card>
           <v-card-title class="headline">Selectionnez le nombre de questions voulues</v-card-title>
-          <v-slider min="4" dark class="pl-4 pr-4" track-color="gray" thumb-color="indigo" color="white" :max="this.listSize" v-model="amountOfQuestionsUserWants" thumb-label step="1" snap></v-slider>
-          <div class="text-xs-center">
-            <v-btn dark flat  @click="amountOfQuestionsDialog = false" >Jouer</v-btn>
-          </div>
+          <v-slider min="4" class="pl-4 pr-4" track-color="gray" thumb-color="indigo" :max="this.listSize" v-model="amountOfQuestionsUserWants" thumb-label step="1" snap></v-slider>
+          <div class="text-xs-center"><h5>{{amountOfQuestionsUserWants}}</h5></div>
+          <div class="text-xs-center pb-2"> <v-btn large flat @click="amountOfQuestionsDialog = false" >Commencer</v-btn></div>
         </v-card>
       </v-dialog>
     </v-layout>

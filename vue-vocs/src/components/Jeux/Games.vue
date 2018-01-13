@@ -11,15 +11,15 @@
     </v-layout>
     <v-layout style="background-color: #ebebeb" row wrap>
       <v-card style="width:100%; height: 100px" class="gray--text text-xs-center">
-        <div style="padding-top: 20px" class="headline text-xs-center">Jeux</div>
-        <div>Entraînez-vous grâce à 5 modes d'exercises</div>
+        <div style="padding-top: 20px" class="headline text-xs-center">Exercices</div>
+        <div>Entraînez-vous grâce à 5 modes d'exercices</div>
         <div class="text-xs-center mt-2">
         </div>
       </v-card>
       <v-card style="width:100%; margin-top: 30px" class="gray--text text-xs-center ml-3 mr-3">
         <br>
-        <div style="padding-top: 10px" class="headline text-xs-center"><h4>Selectionnez Votre Mode D'Exercises</h4></div>
-        <div><h5>Cliquez sur l'icône d'aide pour plus d'informations sur chaque mode D'Exercises</h5></div>
+        <div style="padding-top: 10px" class="headline text-xs-center"><h4>Selectionnez Votre Mode D'exercices</h4></div>
+        <div><h5>Cliquez sur l'icône d'aide pour plus d'informations sur chaque mode d'exercices</h5></div>
         <div class="text-xs-center mt-2">
         </div>
         <v-container fluid style="margin-top: 50px; margin-left: 10%">
@@ -85,6 +85,16 @@
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
+                <v-dialog v-model="dialogConfirmation2" v-else-if="SelectedListForGameIsLessThanTen && selectedGameMode === 'Matching'">
+                  <v-card>
+                    <v-card-title class="headline">Votre liste {{selectedListForGame.name}} a moins de 10 mots, une liste de base sera utilisée.</v-card-title>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn flat to="/lists" @click.native="dialogConfirmation2 = false">Choisir une autre liste</v-btn>
+                      <v-btn flat @click.native="setGameList(aBasicList)">S'entrainer</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
                 <v-dialog v-model="dialogConfirmation2" v-else>
                   <v-card>
                     <v-card-title class="headline">S'entrainer avec la liste {{selectedListForGame.name}}?</v-card-title>
@@ -109,9 +119,9 @@
     data () {
       return {
         gameModes: [
-          {name: 'Traduction', icon: 'gamepad', description: 'Traduire une série de mot qui s\'affiche en l\'écrivant dans la boîte indiquée', link: '/games/classic', color: '#3fb554', showInfo: false},
-          {name: 'QCM', icon: 'gamepad', description: 'Choisir parmit plusieurs mots la traduction correcte ', link: '/games/QCM', color: '#35a6ff', showInfo: false},
-          {name: 'Matching', icon: 'gamepad', description: 'Jeu Matching (arrive prochainement)', link: '/games/matching', color: '#ff4864', showInfo: false}
+          {name: 'Traduction', icon: 'gamepad', description: 'Traduire une série de mots qui s\'affichent en l\'écrivant dans la boîte indiquée', link: '/games/classic', color: '#3fb554', showInfo: false},
+          {name: 'QCM', icon: 'gamepad', description: 'Choisir parmis plusieurs mots la traduction correcte ', link: '/games/QCM', color: '#35a6ff', showInfo: false},
+          {name: 'Matching', icon: 'gamepad', description: 'Lier le mot français à sa traduction correspondante', link: '/games/matching', color: '#ff4864', showInfo: false}
 /*          {name: 'Time Attack', icon: 'gamepad', description: 'Time Attack (arrive prochainement)', link: '/games/classic', color: '#ffc05f', showInfo: false},
           {name: 'Hard List', icon: 'gamepad', description: 'Hard List (arrive prochainement)', link: '', color: '#8b51ff', showInfo: false} */
         ],
@@ -130,6 +140,13 @@
           return false
         } else {
           return this.$store.getters.getSelectedListForGame.wordTrads.length < 4
+        }
+      },
+      SelectedListForGameIsLessThanTen () {
+        if (this.$store.getters.getSelectedListForGame === '') {
+          return false
+        } else {
+          return this.$store.getters.getSelectedListForGame.wordTrads.length < 10
         }
       },
       aBasicList () {
@@ -151,8 +168,12 @@
       },
       setGameList (list) {
         this.$store.dispatch('setGameList', list)
+        this.$store.dispatch('setIsPlayingGame',  true)
         this.$router.push(this.tempLink)
       }
+    },
+    created () {
+      this.$store.dispatch('setIsPlayingGame', false)
     }
   }
 </script>

@@ -96,6 +96,7 @@
       }
     },
     created () {
+      this.$store.dispatch('setIsPlayingGame', false)
       const customActions = {
         saveList: {method: 'POST', url: '/users.json'},
         saveClasse: {method: 'POST', url: '/classes.json'},

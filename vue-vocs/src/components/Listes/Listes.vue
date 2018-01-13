@@ -17,17 +17,17 @@
               <v-btn icon @click.native.stop="confirmListRemoval = true; listRemovalId=list.id">
                 <v-icon class="white&#45;&#45;text" >delete</v-icon>
               </v-btn>
-              <v-btn v-if="list.wordTrads.length > 0" style="font-size: 12px; background-color: #23c9ff; color: white" @click="selectListForGame(list); confirmPlayWithList = true;" >
-                Jouer
+              <v-btn small v-if="list.wordTrads.length > 0" style="border-radius:20px;font-size: 12px; background-color: #23c9ff; color: white" @click="selectListForGame(list); confirmPlayWithList = true;" >
+                S'entrainer
               </v-btn>
-              <v-btn v-if="isValidForAddingToClass(list.wordTrads.length)" style="font-size: 12px; background-color: #23c9ff; color: white" @click="addToClass = true; selectedListToAddInClass = list" >
+              <v-btn small v-if="isValidForAddingToClass(list.wordTrads.length)" style="border-radius:20px;font-size: 12px; background-color: #23c9ff; color: white" @click="addToClass = true; selectedListToAddInClass = list" >
                 Ajouter dans une classe
               </v-btn>
-              <v-btn v-if="isValidForAddingToClass(list.wordTrads.length)" style="font-size: 12px; background-color: #23c9ff; color: white" @click="shareList = true; selectedListToShare = list.id">
+              <v-btn small v-if="isValidForAddingToClass(list.wordTrads.length)" style="border-radius:20px;font-size: 12px; background-color: #23c9ff; color: white" @click="shareList = true; selectedListToShare = list.id">
                 Partager
               </v-btn>
               <v-list-tile-content style="cursor: pointer" class="ml-3" @click="clickedList(list.id); selectList(list, true)">
-                <v-list-tile-title style="font-size: 20px">{{list.name}} <v-icon class="ml-2" @click="confirmListRemoval = true">edit_mode</v-icon></v-list-tile-title>
+                <v-list-tile-title style="font-size: 20px">{{list.name}} </v-list-tile-title>
               </v-list-tile-content>
               <v-list-tile-action>
                 <v-icon style="cursor: pointer" color="grey lighten-1" @click="clickedList(list.id); selectList(list, true)">arrow_right</v-icon>
@@ -57,8 +57,8 @@
               <v-btn icon @click="">
                 <v-icon>description</v-icon>
               </v-btn>
-              <v-btn v-if="list.wordTrads.length > 0" style="font-size: 12px; background-color: #23c9ff; color: white" @click="selectListForGame(list); confirmPlayWithList = true;" >
-                Jouer
+              <v-btn v-if="list.wordTrads.length > 0" small style="border-radius:20px;font-size: 12px; background-color: #23c9ff; color: white" @click="selectListForGame(list); confirmPlayWithList = true;" >
+                S'entrainer
               </v-btn>
               <v-list-tile-content class="ml-3" style="cursor: pointer" @click="clickedList(list.id); selectList(list, false)">
                 <v-list-tile-title style="font-size: 20px">{{ list.name }}</v-list-tile-title>
@@ -107,6 +107,38 @@
               </v-list-tile-content>
             </v-list-tile>
           </v-list-group>
+        </v-list>
+      </v-card>
+    </v-flex>
+  </v-layout>
+  <v-layout>
+    <v-flex xs10 offset-xs1 class="mt-5">
+      <v-card>
+        <v-toolbar color="light-blue" dark>
+          <v-toolbar-title>Hard Liste</v-toolbar-title>
+          <v-btn class="black--text" style="border-radius: 20px" small>S'entrainer</v-btn>
+          <v-spacer></v-spacer>
+        </v-toolbar>
+        <v-list>
+          <v-list-tile v-if="hardList.length <= 0">
+            <v-list-tile-content>
+              <v-list-tile-title>Pas De Mots</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <template v-for="(wordTrad, index) in hardList">
+            <v-list-tile v-if="hardList.length > 0">
+              <v-btn icon @click="">
+                <v-icon>description</v-icon>
+              </v-btn>
+              <v-list-tile-content class="ml-3" style="cursor: pointer" @click="clickedList(wordTrad.id); selectList(wordTrad, false)">
+                <v-list-tile-title style="font-size: 20px">{{ wordTrad.wordTrads.word.content }} &rarr; {{ wordTrad.wordTrads.trad.content }}</v-list-tile-title>
+              </v-list-tile-content>
+              <v-list-tile-action>
+                <v-icon style="cursor: pointer" color="grey lighten-1" @click="clickedList(wordTrad.id); selectList(wordTrad, false)">arrow_right</v-icon>
+              </v-list-tile-action>
+            </v-list-tile>
+            <v-divider style="width:90%" inset v-if="index + 1 < hardList.length "></v-divider>
+          </template>
         </v-list>
       </v-card>
     </v-flex>
@@ -333,6 +365,7 @@
         teacherName:'',
         theTeachers: [],
         selectedListToShare: '',
+        hardList : []
       }
     },
     computed: {
@@ -460,6 +493,7 @@
       }
     },
     created () {
+      this.$store.dispatch('setIsPlayingGame', false)
       for (var i = 0; i < this.classes.length; i++) {
         this.tickedClasses[i] = false;
       }

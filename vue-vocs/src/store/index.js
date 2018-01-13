@@ -47,6 +47,7 @@ export const store = new Vuex.Store({
       ],
       personalLists: []
     },
+    isPlayingGame:false,
     editProfil: false,
     isConfirmingPassword: false,
     selectedList: '',
@@ -138,6 +139,108 @@ export const store = new Vuex.Store({
             },
             content: 'Ecran'
           }
+        },
+        {
+          id: 12,
+          word: {
+            trads: [],
+            language: {
+              code: 'FR'
+            },
+            content: 'Chair'
+          },
+          trad: {
+            trads: [],
+            language: {
+              code: 'EN'
+            },
+            content: 'Chaise'
+          }
+        },
+        {
+          id: 13,
+          word: {
+            trads: [],
+            language: {
+              code: 'FR'
+            },
+            content: 'Door'
+          },
+          trad: {
+            trads: [],
+            language: {
+              code: 'EN'
+            },
+            content: 'Porte'
+          }
+        },
+        {
+          id: 14,
+          word: {
+            trads: [],
+            language: {
+              code: 'FR'
+            },
+            content: 'Bed'
+          },
+          trad: {
+            trads: [],
+            language: {
+              code: 'EN'
+            },
+            content: 'Lit'
+          }
+        },
+        {
+          id: 15,
+          word: {
+            trads: [],
+            language: {
+              code: 'FR'
+            },
+            content: 'Clock'
+          },
+          trad: {
+            trads: [],
+            language: {
+              code: 'EN'
+            },
+            content: 'Horloge'
+          }
+        },
+        {
+          id: 16,
+          word: {
+            trads: [],
+            language: {
+              code: 'FR'
+            },
+            content: 'Printer'
+          },
+          trad: {
+            trads: [],
+            language: {
+              code: 'EN'
+            },
+            content: 'Imprimante'
+          }
+        },
+        {
+          id: 17,
+          word: {
+            trads: [],
+            language: {
+              code: 'FR'
+            },
+            content: 'Pillow'
+          },
+          trad: {
+            trads: [],
+            language: {
+              code: 'EN'
+            },
+            content: 'Oreiller'
+          }
         }
       ]
     },
@@ -147,13 +250,13 @@ export const store = new Vuex.Store({
   },
   mutations: {
     createList (state, payload) {
-      state.user.personalLists.push(payload)
+      state.user.personalLists.push(payload);
     },
     addListToUser (state, payload) {
-      state.user.personalLists.push(payload)
+      state.user.personalLists.push(payload);
     },
     createClass (state, payload) {
-      state.user.classes.push(payload)
+      state.user.classes.push(payload);
     },
     addStudents (state, payload) {
       /*      for (var i = 0; i < state.user.classes.length; i++) {
@@ -163,26 +266,26 @@ export const store = new Vuex.Store({
                 }
               }
             } */
-      state.myDemands.demandSend.push(payload)
-      console.log('payload: ' + JSON.stringify(payload))
-      console.log('myDemands: ' + JSON.stringify(state.myDemands))
+      state.myDemands.demandSend.push(payload);
+      console.log('payload: ' + JSON.stringify(payload));
+      console.log('myDemands: ' + JSON.stringify(state.myDemands));
     },
     addTeachers (state, payload) {
-      state.myDemands.demandSend.push(payload)
-      console.log('payload: ' + JSON.stringify(payload))
-      console.log('myDemands: ' + JSON.stringify(state.myDemands))
+      state.myDemands.demandSend.push(payload);
+      console.log('payload: ' + JSON.stringify(payload));
+      console.log('myDemands: ' + JSON.stringify(state.myDemands));
     },
     removeList (state, payload) {
-      for (var i = 0; i < state.user.personalLists.length; i++) {
+      for (let i = 0; i < state.user.personalLists.length; i++) {
         if (state.user.personalLists[i].id === payload) {
-          state.user.personalLists.splice(i, 1)
+          state.user.personalLists.splice(i, 1);
         }
       }
     },
     removeClassList (state, payload) {
-      for (var i = 0; i < state.user.classLists.length; i++) {
+      for (let i = 0; i < state.user.classLists.length; i++) {
         if (state.user.classLists[i].id === payload) {
-          state.user.classLists.splice(i, 1)
+          state.user.classLists.splice(i, 1);
         }
       }
     },
@@ -197,20 +300,20 @@ export const store = new Vuex.Store({
         classes: null,
         personalLists: null
       }
-      state.connectionErrorMessage = ''
-      state.inscriptionErrorMessage = ''
-      localStorage.removeItem('userEmail')
-      localStorage.removeItem('userPassword')
+      state.connectionErrorMessage = '';
+      state.inscriptionErrorMessage = '';
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('userPassword');
     },
     signUserIn (state, payload) {
-      state.user = payload
+      state.user = payload;
       if (state.isConfirmingPassword) {
-        state.editProfil = true
+        state.editProfil = true;
       }
-      this.dispatch('getAndSetListsClass')
+      this.dispatch('getAndSetListsClass');
     },
     signUserUp (state, payload) {
-      state.user = payload
+      state.user = payload;
     },
     removeStudent (state, payload) {
       if (state.user.roles === 'PROFESSOR') {
@@ -218,15 +321,15 @@ export const store = new Vuex.Store({
           if (state.user.classes[i] === state.selectedClass) {
             for (var y = 0; y < state.selectedClass.users.length; y++) {
               if (state.selectedClass.users[y].id === payload) {
-                state.user.classes[i].users.splice(y, 1)
+                state.user.classes[i].users.splice(y, 1);
               }
             }
           }
         }
       } else if (state.user.roles === 'STUDENT') {
-        state.user.classes = []
-        router.push('/home')
-        state.user.roles = 'USER'
+        state.user.classes = [];
+        router.push('/home');
+        state.user.roles = 'USER';
       }
     },
     removeWord (state, payload) {
@@ -234,7 +337,7 @@ export const store = new Vuex.Store({
         if (state.selectedList.wordTrads[i].id === payload) {
           for (var y = 0; y < state.user.personalLists.length; y++) {
             if (state.user.personalLists[y] === state.selectedList) {
-              state.user.personalLists[y].wordTrads.splice(i, 1)
+              state.user.personalLists[y].wordTrads.splice(i, 1);
             }
           }
         }
@@ -243,24 +346,24 @@ export const store = new Vuex.Store({
     removeClass (state, payload) {
       for (var i = 0; i < state.user.classes.length; i++) {
         if (state.user.classes[i].id === payload) {
-          state.user.classes.splice(i, 1)
+          state.user.classes.splice(i, 1);
         }
       }
     },
     selectList (state, payload) {
-      state.selectedList = payload
+      state.selectedList = payload;
     },
     selectWord (state, payload) {
-      state.selectedWord = payload
+      state.selectedWord = payload;
     },
     selectListForGame (state, payload) {
-      state.selectedListForGame = payload
+      state.selectedListForGame = payload;
     },
     setGameList (state, payload) {
-      state.gameList = payload
+      state.gameList = payload;
     },
     selectClass (state, payload) {
-      state.selectedClass = payload
+      state.selectedClass = payload;
     },
     setIsAPersonalList (state, payload) {
       state.isAPersonalList = payload
@@ -396,6 +499,9 @@ export const store = new Vuex.Store({
 
 
   actions: {
+    setIsPlayingGame({state},payload) {
+      state.isPlayingGame = payload;
+    },
     createList ({commit, state}, payload) {
       state.loading = true
       var list = {
@@ -687,14 +793,6 @@ export const store = new Vuex.Store({
                           console.log('mes demandes: ' + JSON.stringify(state.myDemands))
                           console.log('https://vocsapi.lebarillier.fr/rest/demands/users/' + state.user.id)
                         })
-                      Vue.http.get('https://vocsapi.lebarillier.fr/rest/classes')
-                        .then(response3 => {
-                          return response3.json()
-                        })
-                        .then(data4 => {
-                          state.allClasses = data4
-                          console.log('AllClasses: ' + JSON.stringify(state.allClasses))
-                        })
                       if (JSON.stringify(theUser.roles) === '["ROLE_USER"]') {
                         theUser.roles = 'USER'
                       } else if (JSON.stringify(theUser.roles) === '["ROLE_STUDENT"]') {
@@ -736,6 +834,7 @@ export const store = new Vuex.Store({
     },
     signUserUp ({commit, state}, payload) {
       state.loading = true
+      console.log(JSON.stringify(payload));
       const user = {
         firstname: payload.firstname,
         surname: payload.surname,
@@ -795,14 +894,6 @@ export const store = new Vuex.Store({
                           console.log(JSON.stringify(state.myDemands))
                           console.log('https://vocsapi.lebarillier.fr/rest/demands/users/' + state.user.id)
                         })
-                      Vue.http.get('https://vocsapi.lebarillier.fr/rest/classes')
-                        .then(response3 => {
-                          return response3.json()
-                        })
-                        .then(data4 => {
-                          state.allClasses = data4
-                          console.log('AllClasses: ' + JSON.stringify(state.allClasses))
-                        })
                       if (JSON.stringify(theUser.roles) === '["ROLE_USER"]') {
                         theUser.roles = 'USER'
                       } else if (JSON.stringify(theUser.roles) === '["ROLE_STUDENT"]') {
@@ -815,6 +906,96 @@ export const store = new Vuex.Store({
                       this.dispatch('setSnackbarMessage', 'Bienvenu sur Vocs!')
                       localStorage.setItem('userPassword',payload.password)
                       localStorage.setItem('userEmail',payload.email)
+                      localStorage.setItem('userVoicePreference','US English Male')
+                      state.loading = false
+                      commit('signUserUp', theUser)
+                    })
+                })
+            })
+        })
+        .catch(
+          error => {
+            console.log(error)
+            state.loading = false
+            state.inscriptionErrorMessage = 'Votre adresse mail est déja lié à un compte, Voulez-vous vous connectez avec?'
+          }
+        )
+    },
+    signStudentUp ({commit, state}, payload) {
+      state.loading = true
+      const user = {
+        firstname: payload.user.firstname,
+        surname: payload.user.surname,
+        email: payload.user.email,
+        password: payload.user.password,
+        roles: ['ROLE_' + payload.user.roles]
+      }
+      if (JSON.stringify(user.roles) === '["ROLE_USER"]') {
+        user.roles = []
+      }
+      console.log(JSON.stringify(user))
+      var theUser = {}
+      Vue.http.post('https://vocsapi.lebarillier.fr/rest/users', user)
+        .then(response => {
+          theUser = {
+            id: response.body.id,
+            isLoggedIn: true,
+            firstname: response.body.firstname,
+            surname: response.body.surname,
+            email: response.body.email,
+            personalLists: response.body.lists,
+            classes: payload.user.classes
+          }
+          Vue.http.get('https://vocsapi.lebarillier.fr/rest/users/' + theUser.id)
+            .then(response2 => {
+              return response2.json()
+            })
+            .then(data => {
+              theUser.roles = data.roles
+              Vue.http.get('https://vocsapi.lebarillier.fr/rest/users/' + theUser.id + '/lists')
+                .then(response2 => {
+                  return response2.json()
+                })
+                .then(data2 => {
+                  theUser.personalLists = data2
+                  Vue.http.get('https://vocsapi.lebarillier.fr/rest/users/' + theUser.id + '/classes')
+                    .then(response2 => {
+                      return response2.json()
+                    })
+                    .then(data3 => {
+                      theUser.classes = data3
+                      Vue.http.get('https://vocsapi.lebarillier.fr/rest/users')
+                        .then(response3 => {
+                          return response3.json()
+                        })
+                        .then(data4 => {
+                          state.users = data4,
+                          this.dispatch('setUserClass', payload.classe)
+                        })
+                      Vue.http.get('https://vocsapi.lebarillier.fr/rest/demands/users/' + theUser.id)
+                        .then(response4 => {
+                          console.log(JSON.stringify(response4))
+                          return response4.json()
+                        })
+                        .then(data5 => {
+                          console.log(JSON.stringify(data5))
+                          state.myDemands = data5
+                          console.log(JSON.stringify(state.myDemands))
+                          console.log('https://vocsapi.lebarillier.fr/rest/demands/users/' + state.user.id)
+                        })
+                      if (JSON.stringify(theUser.roles) === '["ROLE_USER"]') {
+                        theUser.roles = 'USER'
+                      } else if (JSON.stringify(theUser.roles) === '["ROLE_STUDENT"]') {
+                        theUser.roles = 'STUDENT'
+                      } else if (JSON.stringify(theUser.roles) === '["ROLE_PROFESSOR"]') {
+                        theUser.roles = 'PROFESSOR'
+                      }
+                      router.push('/home')
+                      this.dispatch('setSnackbarIsEnabled', true)
+                      this.dispatch('setSnackbarMessage', 'Bienvenu sur Vocs!')
+                      localStorage.setItem('userPassword',payload.user.password)
+                      localStorage.setItem('userEmail',payload.user.email)
+                      localStorage.setItem('userVoicePreference','US English Male')
                       state.loading = false
                       commit('signUserUp', theUser)
                     })
@@ -1287,12 +1468,33 @@ export const store = new Vuex.Store({
         })
     },
     getSchools ({commit, state}) {
+      state.loading = true;
       Vue.http.get('https://vocsapi.lebarillier.fr/rest/schools')
         .then(response => {
           return response.json()
         })
         .then(data => {
           state.schools = data
+          state.loading = false;
+        })
+    },
+    getSchoolsAndClasses ({commit, state}) {
+      state.loading = true;
+      Vue.http.get('https://vocsapi.lebarillier.fr/rest/schools')
+        .then(response => {
+          return response.json()
+        })
+        .then(data => {
+          state.schools = data
+          Vue.http.get('https://vocsapi.lebarillier.fr/rest/classes')
+            .then(response3 => {
+              return response3.json()
+
+            })
+            .then(data4 => {
+              state.allClasses = data4
+              state.loading = false;
+            })
         })
     },
     getAndSetListsClass ({commit}) {
@@ -1586,6 +1788,9 @@ export const store = new Vuex.Store({
     },
     editProfil (state) {
       return state.editProfil
+    },
+    getIsPlayingGame (state) {
+      return state.isPlayingGame
     }
   }
 })

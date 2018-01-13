@@ -104,6 +104,7 @@
       }
     },
     created () {
+      this.$store.dispatch('setIsPlayingGame', false)
       for (var i = 0; i < this.allClasses.length; i++) {
         this.theClasses[i] = this.allClasses[i].name
       }

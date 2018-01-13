@@ -26,8 +26,12 @@
                 </v-card>
               </v-dialog>
               <v-list-tile-content>
-                <v-list-tile-title>{{aWord.word.content}} &rarr; {{aWord.trad.content}}</v-list-tile-title>
+                <v-list-tile-title v-if="aWord.word.language.code=='EN'">{{aWord.word.content}} &rarr; {{aWord.trad.content}}</v-list-tile-title>
+                <v-list-tile-title v-else>{{aWord.trad.content}} &rarr; {{aWord.word.content}}</v-list-tile-title>
               </v-list-tile-content>
+              <v-btn icon @click="listenToWord(aWord)">
+                <v-icon color="grey lighten-1">volume_up</v-icon>
+              </v-btn>
               <v-list-tile-action>
                 <v-btn icon v-if="isAPersonalList" @click="showWordDeleteConfirmation=true; wordRemovalId=aWord.id; selectWord(aWord)">
                   <v-icon color="grey lighten-1">delete</v-icon>
@@ -133,7 +137,17 @@
         this.$store.dispatch('addWords', words)
         this.createdWords = []
         this.createWordId = ''
+      },
+      listenToWord(word) {
+        if(word.word.language.code ==='EN') {
+          responsiveVoice.speak(word.word.content,localStorage.getItem('userVoicePreference'), {rate: 0.8});
+        } else {
+          responsiveVoice.speak(word.trad.content,localStorage.getItem('userVoicePreference'), {rate: 0.8});
+        }
       }
+    },
+    created () {
+      this.$store.dispatch('setIsPlayingGame', false)
     }
   }
 </script>

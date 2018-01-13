@@ -98,6 +98,9 @@
       removeStudent () {
         this.$store.dispatch('removeStudent', this.theUser.id)
       }
+    },
+    created () {
+      this.$store.dispatch('setIsPlayingGame', false)
     }
   }
 </script>

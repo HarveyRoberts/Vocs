@@ -163,7 +163,7 @@
     </v-toolbar>
 
     <v-toolbar v-if="isLoggedIn" :class="topBarClass" :style="{backgroundColor: topbarColor, color: topbarTextColor}" style="z-index:998; padding-right: 2%; padding-left: 1%;  position: fixed !important">
-      <v-toolbar-side-icon @click="dashboardMove">
+      <v-toolbar-side-icon @click="dashboardMove" v-if="!isPlayingGame">
       </v-toolbar-side-icon>
       <v-toolbar-title>
         <div style="display: flex">
@@ -494,14 +494,27 @@
       },
       snackbarEnabled () {
         return this.$store.getters.snackbarIsEnabled
+      },
+      isPlayingGame () {
+        return this.$store.getters.getIsPlayingGame
       }
     },
     watch: {
       isLoggedIn: function (val) {
-        if (val === true) {
+        if (val === true && this.isPlayingGame === false) {
           this.mainClass = 'dashboard-open'
-        } else {
+        } else if (this.isPlayingGame === false){
           this.mainClass = 'dashboard-closed'
+        } else {
+          this.mainClass = 'dashboard-half-open'
+        }
+      },
+      isPlayingGame: function(value) {
+        if(value === true) {
+          this.dashboardMove ()
+        }
+        if(value === false) {
+          this.dashboardMove ()
         }
       }
     },
@@ -578,14 +591,18 @@
       }
     },
     created () {
-      if (this.isLoggedIn === true || (localStorage.getItem('userEmail') && localStorage.getItem('userPassword'))) {
+      if (this.isLoggedIn === true && !this.isPlayingGame || (localStorage.getItem('userEmail') && localStorage.getItem('userPassword') && !this.isPlayingGame)) {
         this.mainClass = 'dashboard-open'
         this.$router.push('/home')
-      } else {
+      } else if(!this.isPlayingGame){
         this.mainClass = 'dashboard-closed'
         this.$router.push('/homepage')
+      }else if(this.isPlayingGame){
+        this.mainClass = 'dashboard-half-open'
+      }else {
+        this.$router.push('/homepage')
       }
-      this.$store.dispatch('getSchools')
+      this.$store.dispatch('getSchoolsAndClasses')
       this.$store.dispatch('autoLoginIn')
       document.addEventListener('beforeunload', this.beforeunload)
     }

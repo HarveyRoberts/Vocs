@@ -304,6 +304,7 @@
       }
     },
     created () {
+      this.$store.dispatch('setIsPlayingGame', false)
       for (var i = 0; i < this.users.length; i++) {
         if (JSON.stringify(this.users[i].roles) === '["ROLE_STUDENT"]' || JSON.stringify(this.users[i].roles) === '["ROLE_USER"]') {
           var firstname = this.users[i].firstname

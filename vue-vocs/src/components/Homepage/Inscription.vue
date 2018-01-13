@@ -214,7 +214,7 @@
                   <v-layout row>
                     {{notice}}
                     <v-flex  xs6 offset-xs3 class="text-xs-center">
-                      <v-btn justify-center @click="acceptClassJoin" :disabled="classSearch === '' || user.classes[0].school" >Continuer</v-btn>
+                      <v-btn justify-center @click="StudentSignUp" :disabled="classSearch === '' || user.classes[0].school === null" >Continuer</v-btn>
                     </v-flex>
                   </v-layout>
                 </form>
@@ -341,9 +341,6 @@
     },
     methods: {
       onSignup () {
-        if (this.user.roles === 'STUDENT') {
-          this.user.roles = 'USER'
-        }
         this.$store.dispatch('signUserUp', this.user)
       },
       comparePasswords () {
@@ -361,10 +358,8 @@
       resetSignInAndUpErrorMessages () {
         this.$store.dispatch('resetSignInAndUpErrorMessages')
       },
-      acceptClassJoin () {
-        /*
-                this.$store.dispatch('setFirstTimeStudent', true)
-                this.$store.dispatch('setRoles', 'STUDENT') */
+      StudentSignUp () {
+        this.user.roles = 'USER'
         var id = null
         for (var i = 0; i < this.allClasses.length; i++) {
           if (this.allClasses[i].name === this.classSearch) {
@@ -372,14 +367,17 @@
           }
         }
         var theClassToSendOff = {
-          id: id,
-          name: this.classSearch
+          classe: {
+            id: id,
+            name: this.classSearch
+          },
+          user: this.user
         }
-        this.$store.dispatch('setUserClass', theClassToSendOff)
-        this.onSignup();
-      }
+        this.$store.dispatch('signStudentUp', theClassToSendOff)
+      },
     },
     created () {
+      this.$store.dispatch('setIsPlayingGame', false)
       for (var i = 0; i < this.allClasses.length; i++) {
         this.theClasses[i] = this.allClasses[i].name
       }
