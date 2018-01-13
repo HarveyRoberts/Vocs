@@ -62,8 +62,8 @@
         </v-flex>
         <br>
       </v-container>
-    <v-parallax :src="clouds" height="3600" style="height: 220vh;background-color: #4bcdff; width:100vw">
-      <v-parallax :src="clouds2" height="11000" style="position:absolute; width:100vw">
+    <v-parallax :src="sky" height="3600" style="height: 220vh; width:100vw">
+      <v-parallax :src="stars" height="11000" style="position:absolute; width:100vw">
       </v-parallax>
       <v-layout row wrap style="margin-top: 500px" >
         <v-flex xs6 class="text-xs-center s2-image" >
@@ -92,8 +92,8 @@
   import HomepageBG4 from '@/assets/HomepageBG4.png'
   import Iphone from '@/assets/iphone.png'
   import Android from '@/assets/android.png'
-  import clouds from '@/assets/cloud1.png'
-  import clouds2 from '@/assets/cloud2.png'
+  import sky from '@/assets/sky.png'
+  import stars from '@/assets/stars.png'
 
   export default {
     data () {
@@ -107,8 +107,8 @@
         ],
         iphone: Iphone,
         android: Android,
-        clouds: clouds,
-        clouds2: clouds2,
+        sky: sky,
+        stars: stars,
         s1TextClass: 's1-text-hide',
         s2IphoneClass: 's2-iphone-hide',
         s2TextClass: 's2-text-hide',
