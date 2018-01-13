@@ -77,14 +77,14 @@ export const store = new Vuex.Store({
           word: {
             trads: [],
             language: {
-              code: 'FR'
+              code: 'EN'
             },
             content: 'Computer'
           },
           trad: {
             trads: [],
             language: {
-              code: 'EN'
+              code: 'FR'
             },
             content: 'Ordinateur'
           }
@@ -94,14 +94,14 @@ export const store = new Vuex.Store({
           word: {
             trads: [],
             language: {
-              code: 'FR'
+              code: 'EN'
             },
             content: 'Mouse'
           },
           trad: {
             trads: [],
             language: {
-              code: 'EN'
+              code: 'FR'
             },
             content: 'Souris'
           }
@@ -111,14 +111,14 @@ export const store = new Vuex.Store({
           word: {
             trads: [],
             language: {
-              code: 'FR'
+              code: 'EN'
             },
             content: 'Keyboard'
           },
           trad: {
             trads: [],
             language: {
-              code: 'EN'
+              code: 'FR'
             },
             content: 'Clavier'
           }
@@ -128,14 +128,14 @@ export const store = new Vuex.Store({
           word: {
             trads: [],
             language: {
-              code: 'FR'
+              code: 'EN'
             },
             content: 'Screen'
           },
           trad: {
             trads: [],
             language: {
-              code: 'EN'
+              code: 'FR'
             },
             content: 'Ecran'
           }
@@ -145,14 +145,14 @@ export const store = new Vuex.Store({
           word: {
             trads: [],
             language: {
-              code: 'FR'
+              code: 'EN'
             },
             content: 'Chair'
           },
           trad: {
             trads: [],
             language: {
-              code: 'EN'
+              code: 'FR'
             },
             content: 'Chaise'
           }
@@ -162,14 +162,14 @@ export const store = new Vuex.Store({
           word: {
             trads: [],
             language: {
-              code: 'FR'
+              code: 'EN'
             },
             content: 'Door'
           },
           trad: {
             trads: [],
             language: {
-              code: 'EN'
+              code: 'FR'
             },
             content: 'Porte'
           }
@@ -179,14 +179,14 @@ export const store = new Vuex.Store({
           word: {
             trads: [],
             language: {
-              code: 'FR'
+              code: 'EN'
             },
             content: 'Bed'
           },
           trad: {
             trads: [],
             language: {
-              code: 'EN'
+              code: 'FR'
             },
             content: 'Lit'
           }
@@ -196,14 +196,14 @@ export const store = new Vuex.Store({
           word: {
             trads: [],
             language: {
-              code: 'FR'
+              code: 'EN'
             },
             content: 'Clock'
           },
           trad: {
             trads: [],
             language: {
-              code: 'EN'
+              code: 'FR'
             },
             content: 'Horloge'
           }
@@ -213,14 +213,14 @@ export const store = new Vuex.Store({
           word: {
             trads: [],
             language: {
-              code: 'FR'
+              code: 'EN'
             },
             content: 'Printer'
           },
           trad: {
             trads: [],
             language: {
-              code: 'EN'
+              code: 'FR'
             },
             content: 'Imprimante'
           }
@@ -230,14 +230,14 @@ export const store = new Vuex.Store({
           word: {
             trads: [],
             language: {
-              code: 'FR'
+              code: 'EN'
             },
             content: 'Pillow'
           },
           trad: {
             trads: [],
             language: {
-              code: 'EN'
+              code: 'FR'
             },
             content: 'Oreiller'
           }
@@ -907,6 +907,7 @@ export const store = new Vuex.Store({
                       localStorage.setItem('userPassword',payload.password)
                       localStorage.setItem('userEmail',payload.email)
                       localStorage.setItem('userVoicePreference','US English Male')
+                      localStorage.setItem('amountOfQuestions',4)
                       state.loading = false
                       commit('signUserUp', theUser)
                     })
@@ -996,6 +997,7 @@ export const store = new Vuex.Store({
                       localStorage.setItem('userPassword',payload.user.password)
                       localStorage.setItem('userEmail',payload.user.email)
                       localStorage.setItem('userVoicePreference','US English Male')
+                      localStorage.setItem('amountOfQuestions',4)
                       state.loading = false
                       commit('signUserUp', theUser)
                     })

@@ -73,16 +73,6 @@
         </div>
       </v-flex>
     </v-layout>
-    <v-layout row justify-center>
-      <v-dialog v-if="this.listSize >= 5"persistent v-model="amountOfQuestionsDialog">
-        <v-card>
-          <v-card-title class="headline">Selectionnez le nombre de questions voulues</v-card-title>
-          <v-slider min="4" class="pl-4 pr-4" track-color="gray" thumb-color="indigo" :max="this.listSize" v-model="amountOfQuestionsUserWants" thumb-label step="1" snap></v-slider>
-          <div class="text-xs-center"><h5>{{amountOfQuestionsUserWants}}</h5></div>
-          <div class="text-xs-center pb-2"> <v-btn large flat @click="amountOfQuestionsDialog = false" >Commencer</v-btn></div>
-        </v-card>
-      </v-dialog>
-    </v-layout>
   </v-container>
 </template>
 
@@ -103,8 +93,7 @@
         tempTempList: '',
         questionChoisesTempList: '',
         randomIndexForCorrectAnswer: null,
-        amountOfQuestionsUserWants: null,
-        amountOfQuestionsDialog: true,
+        amountOfQuestionsUserWants: localStorage.getItem('amountOfQuestions'),
         userEnteredCorrectAnswer: false,
         userEnteredWrongAnswer: false,
         hasGotItWrong: false
@@ -210,9 +199,6 @@
       this.listSize = this.list.wordTrads.length
       console.log(JSON.stringify(this.list))
       this.randomQuestion()
-      if(this.listSize < 5) {
-        this.amountOfQuestionsUserWants = 4;
-      }
     }
   }
 </script>

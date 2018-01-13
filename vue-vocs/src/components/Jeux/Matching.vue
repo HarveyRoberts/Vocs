@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="mt-5" style="background-color: #f4f4f4; height: 125vh" >
     <v-layout row wrap style="margin-top: 5vh">
-      <div class="mb-5 text-xs-center" style="width: 90vw;margin:auto">
+      <div class="mb-3 text-xs-center" style="width: 90vw;margin:auto">
         <div style="width: 100%; background-color: rgba(0,115,237,0.47); height: 10px">
           <div style="background-color: #059ffb; height: 10px; transition: all 300ms cubic-bezier(0.550, 0.085, 0.680, 0.530)" :style="{width: progress + '%'}"></div>
         </div>

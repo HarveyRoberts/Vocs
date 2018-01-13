@@ -21,7 +21,12 @@
               required
             ></v-select>
           </div>
-          <v-btn @click="setSettings">Sauvegarder</v-btn>
+          <div style="display: flex;width: 40%;margin: auto" class="headline text-xs-center">
+            <div style="margin-top: 15px;margin-right: 20px">Questions voulues :  </div>
+            <v-slider min="1" class="pl-4 pr-4" track-color="gray" thumb-color="indigo" max="50" v-model="amountOfQuestionsUserWants" thumb-label step="1" snap></v-slider>
+            <div style="margin-top: 15px;" class="text-xs-center"><h5>{{amountOfQuestionsUserWants}}</h5></div>
+          </div>
+          <v-btn style="margin-top: 10px;" @click="setSettings">Sauvegarder</v-btn>
         </form>
       </v-card>
     </v-layout>
@@ -38,7 +43,8 @@
           email: '',
           password: ''
         },
-        voiceSelected: null,
+        voiceSelected: localStorage.getItem('userVoicePreference'),
+        amountOfQuestionsUserWants: localStorage.getItem('amountOfQuestions')
       }
     },
     computed: {
@@ -70,6 +76,7 @@
     methods: {
       setSettings () {
         localStorage.setItem('userVoicePreference',this.voiceSelected)
+        localStorage.setItem('amountOfQuestions',this.amountOfQuestionsUserWants)
         responsiveVoice.setDefaultVoice(this.voiceSelected);
       }
     },

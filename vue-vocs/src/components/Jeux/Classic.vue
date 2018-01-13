@@ -72,16 +72,6 @@
       </v-flex>
     </v-layout>
     <v-layout row justify-center>
-      <v-dialog v-if="this.listSize > 1"persistent v-model="amountOfQuestionsDialog">
-        <v-card>
-          <v-card-title class="headline">Selectionnez le nombre de questions voulues</v-card-title>
-          <v-slider min="1" class="pl-4 pr-4" track-color="gray" thumb-color="indigo" :max="this.listSize" v-model="amountOfQuestionsUserWants" thumb-label step="1" snap></v-slider>
-          <div class="text-xs-center"><h5>{{amountOfQuestionsUserWants}}</h5></div>
-            <div class="text-xs-center pb-2"> <v-btn large flat @click="amountOfQuestionsDialog = false" >Commencer</v-btn></div>
-        </v-card>
-      </v-dialog>
-    </v-layout>
-    <v-layout row justify-center>
       <v-dialog v-if="alertSignalerMot"persistent v-model="alertSignalerMot">
         <v-card>
           <v-card-title v-if="accountType == 'Élève'" class="headline text-xs-center">Voulez-vous proposer votre mot à votre professeur?</v-card-title>
@@ -117,8 +107,7 @@
         correctAnswers: 0,
         currentWordToRemove: '',
         listSize: 0,
-        amountOfQuestionsUserWants: null,
-        amountOfQuestionsDialog: true,
+        amountOfQuestionsUserWants: localStorage.getItem('amountOfQuestions'),
         alertSignalerMot: false,
         userEnteredCorrectAnswer : false,
         userEnteredWrongAnswer : false,
