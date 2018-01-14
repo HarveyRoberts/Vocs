@@ -35,6 +35,18 @@
                   </v-alert>
                   <v-btn class="blue" dark large @click="alertSignalerMot=true">Signaler Le Mot</v-btn>
                 </div>
+                <div v-if="userEnteredSynonym">
+                  <v-alert
+                    color="info"
+                    icon="check_circle"
+                    :value="userEnteredSynonym"
+                    transition="scale-transition"
+                  >
+                    C'est correct!<br>
+                    Une autre solution est:
+                    <h6>{{previousAnswer}}</h6>
+                  </v-alert>
+                </div>
               </v-flex>
             </v-layout>
             <br>
@@ -111,8 +123,10 @@
         alertSignalerMot: false,
         userEnteredCorrectAnswer : false,
         userEnteredWrongAnswer : false,
+        userEnteredSynonym: false,
         hasGotItWrong: false,
-        synonymes : []
+        synonymes : [],
+        previousAnswer: null
       }
     },
     computed: {
@@ -162,6 +176,7 @@
           }
           this.userEnteredCorrectAnswer = true;
           this.userEnteredWrongAnswer = false;
+          this.userEnteredSynonym = false;
           this.questionResult = 'Bonne Réponse'
           this.questionsAsked++;
           if (this.questionsAsked >= this.amountOfQuestionsUserWants) {
@@ -175,8 +190,10 @@
           if(!this.hasGotItWrong){
             this.correctAnswers++
           }
-          this.userEnteredCorrectAnswer = true;
+          this.userEnteredCorrectAnswer = false;
+          this.userEnteredSynonym = true;
           this.userEnteredWrongAnswer = false;
+          this.previousAnswer = this.answer;
           this.questionResult = 'Bonne Réponse'
           this.questionsAsked++;
           if (this.questionsAsked >= this.amountOfQuestionsUserWants) {
@@ -188,6 +205,7 @@
           }
         }else {
           this.hasGotItWrong = true;
+          this.userEnteredSynonym = false;
           this.userEnteredCorrectAnswer = false;
           this.userEnteredWrongAnswer = true;
           this.questionResult = 'Mauvaise Réponse'
