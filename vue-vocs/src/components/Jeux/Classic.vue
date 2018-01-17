@@ -43,7 +43,7 @@
                     transition="scale-transition"
                   >
                     C'est correct!<br>
-                    Une autre solution est:
+                    La solution attendue est:
                     <h6>{{previousAnswer}}</h6>
                   </v-alert>
                 </div>

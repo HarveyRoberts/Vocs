@@ -25,6 +25,24 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog v-model="showDownloadAppDialog" fullscreen style="z-index: 999">
+      <v-card>
+        <v-dialog v-model="showDownloadAppDialog" max-width="290">
+          <v-card>
+            <v-card-title class="headline">Vous êtes sur petit écran! </v-card-title>
+            <v-card-text>Telecharger notre application mobile:</v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1"  dark>IOS</v-btn>
+              <v-btn color="blue darken-1" dark>Android</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-card>
+    </v-dialog>
+
+
+
     <v-snackbar
       top
       multi-line
@@ -373,8 +391,17 @@
         dashboardMarginTop: 20,
         showNotifications: false,
         showNotificationsTeacher: false,
-        showDemandsSent: false
+        showDemandsSent: false,
+        windowWidth: 0,
+        showDownloadAppDialog: false
       }
+    },
+    mounted() {
+      this.$nextTick(function() {
+        window.addEventListener('resize', this.getWindowWidth);
+        this.getWindowWidth()
+      })
+
     },
     computed: {
       isLoggedIn () {
@@ -519,6 +546,14 @@
       }
     },
     methods: {
+      getWindowWidth(event) {
+        this.windowWidth = document.documentElement.clientWidth;
+        if(this.windowWidth <= 900){
+          this.showDownloadAppDialog = true;
+        } else {
+          this.showDownloadAppDialog = false;
+        }
+      },
       deconnect () {
         this.$store.dispatch('logout')
         this.$router.push('/homepage')
